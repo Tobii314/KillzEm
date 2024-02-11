@@ -3,14 +3,18 @@ package com.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.game.KiilzEm;
 import com.game.buttons.MainMenuButtons;
 
 public class MainMenuScreen implements Screen {
+    Array<Actor> listOfbuttons = new Array<>();
     public Stage stage;
     Texture image;
     KiilzEm game;
@@ -20,10 +24,34 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         image = new Texture("MainMenu.png");
+        game.font = new BitmapFont(Gdx.files.internal("text/text.fnt"));
+        game.font.getData().setScale(2.0f);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        MainMenuButtons mainMenuButtons = new MainMenuButtons(this, this);
+        new MainMenuButtons(this, this);
+        listOfbuttons = stage.getActors();
+        listOfbuttons.get(0).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if ((x >= 0 && x <= 300) && (y >=0 && y <=100)) {
+                    game.setScreen(new GameScreen(game));
+                }
+            }
+        });
+        listOfbuttons.get(1).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
 
+            }
+        });
+        listOfbuttons.get(2).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if ((x >= 0 && x <= 300) && (y >=0 && y <=100)) {
+                    Gdx.app.exit();
+                }
+            }
+        });
     }
 
     @Override
@@ -31,6 +59,7 @@ public class MainMenuScreen implements Screen {
         ScreenUtils.clear(1, 1, 1, 1);
         game.batch.begin();
         game.batch.draw(image, 0, 0);
+        game.font.draw(game.batch, "KiilzEm", Gdx.graphics.getWidth() / 2 - 275, 900);
         game.batch.end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -53,11 +82,13 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
+        stage.dispose();
+        image.dispose();
 
     }
 }
