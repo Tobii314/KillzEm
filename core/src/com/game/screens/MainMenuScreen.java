@@ -10,26 +10,31 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.game.KiilzEm;
 import com.game.buttons.MainMenuButtons;
 
 public class MainMenuScreen implements Screen {
+    boolean isButtonClicked = false;
+    private SettingsScreen screen;
     Array<Actor> listOfbuttons = new Array<>();
     public Stage stage;
     Texture image;
     KiilzEm game;
     public MainMenuScreen(KiilzEm game) {
         this.game = game;
+        screen = new SettingsScreen(game);
     }
     @Override
     public void show() {
         image = new Texture("MainMenu.png");
         game.font = new BitmapFont(Gdx.files.internal("text/text.fnt"));
         game.font.getData().setScale(2.0f);
-        stage = new Stage();
+        stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         new MainMenuButtons(this, this);
         listOfbuttons = stage.getActors();
+
         listOfbuttons.get(0).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -41,7 +46,8 @@ public class MainMenuScreen implements Screen {
         listOfbuttons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                isButtonClicked = true;
+                hide();
             }
         });
         listOfbuttons.get(2).addListener(new ClickListener() {
@@ -59,10 +65,14 @@ public class MainMenuScreen implements Screen {
         ScreenUtils.clear(1, 1, 1, 1);
         game.batch.begin();
         game.batch.draw(image, 0, 0);
-        game.font.draw(game.batch, "KiilzEm", Gdx.graphics.getWidth() / 2 - 275, 900);
+        game.font.draw(game.batch, "KiilzEm", Gdx.graphics.getWidth() / 2 - 275, 950);
         game.batch.end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+        if (isButtonClicked) {
+            screen.show();
+            screen.render(delta);
+        }
     }
 
     @Override
@@ -82,7 +92,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+        stage.dispose();
     }
 
     @Override

@@ -7,15 +7,15 @@ import com.game.screens.MainMenuScreen;
 
 public class MainMenuButtons {
     MainMenuScreen screen;
-    private Skin skin;
+    private final Skin skin;
     MainMenuScreen stage;
     final String STR_PLAY = "PLAY";
-    final String STR_SETTINGS ="SETTINGS";
-    final String STR_EXIT ="EXIT";
+    final String STR_SETTINGS = "SETTINGS";
+    final String STR_EXIT = "EXIT";
     public MainMenuButtons(MainMenuScreen screen, MainMenuScreen stage) {
         this.screen = screen;
         this.stage = stage;
-        skin = new Skin(Gdx.files.internal("skin/button.json"));
+        skin = new Skin(Gdx.files.internal("skin1/button.json"));
         addButtons();
     }
 
