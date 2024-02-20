@@ -12,18 +12,20 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.game.KiilzEm;
+import com.game.MusicsAndSounds;
 import com.game.buttons.MainMenuButtons;
 
 public class MainMenuScreen implements Screen {
+    public MainMenuScreen savedObject;
     boolean isButtonClicked = false;
-    private SettingsScreen screen;
+    private final SettingsScreen screen;
     Array<Actor> listOfbuttons = new Array<>();
     public Stage stage;
     Texture image;
     KiilzEm game;
     public MainMenuScreen(KiilzEm game) {
         this.game = game;
-        screen = new SettingsScreen(game);
+        screen = new SettingsScreen(game, this);
     }
     @Override
     public void show() {
@@ -38,24 +40,23 @@ public class MainMenuScreen implements Screen {
         listOfbuttons.get(0).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if ((x >= 0 && x <= 300) && (y >=0 && y <=100)) {
-                    game.setScreen(new GameScreen(game));
-                }
+                MusicsAndSounds.sound.play(MusicsAndSounds.soundSliderValue);
+                game.setScreen(new GameScreen(game));
+                stage.dispose();
             }
         });
         listOfbuttons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isButtonClicked = true;
-                hide();
+                stage.dispose();
+                //hide();
             }
         });
         listOfbuttons.get(2).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if ((x >= 0 && x <= 300) && (y >=0 && y <=100)) {
                     Gdx.app.exit();
-                }
             }
         });
     }
@@ -92,7 +93,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        stage.dispose();
+
     }
 
     @Override

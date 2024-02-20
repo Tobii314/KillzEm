@@ -7,11 +7,11 @@ import com.game.screens.MainMenuScreen;
 
 public class MainMenuButtons {
     MainMenuScreen screen;
-    private final Skin skin;
     MainMenuScreen stage;
-    final String STR_PLAY = "PLAY";
-    final String STR_SETTINGS = "SETTINGS";
-    final String STR_EXIT = "EXIT";
+    private final Skin skin;
+    private final String STR_PLAY = "PLAY";
+    private final String STR_SETTINGS = "SETTINGS";
+    private final String STR_EXIT = "EXIT";
     public MainMenuButtons(MainMenuScreen screen, MainMenuScreen stage) {
         this.screen = screen;
         this.stage = stage;
