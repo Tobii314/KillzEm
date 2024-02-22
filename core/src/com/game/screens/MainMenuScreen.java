@@ -12,14 +12,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.game.KiilzEm;
-import com.game.MusicsAndSounds;
+import com.game.ConfigurationFields;
 import com.game.buttons.MainMenuButtons;
 
 public class MainMenuScreen implements Screen {
-    public MainMenuScreen savedObject;
     boolean isButtonClicked = false;
     private final SettingsScreen screen;
-    Array<Actor> listOfbuttons = new Array<>();
+    Array<Actor> listOfButtons = new Array<>();
     public Stage stage;
     Texture image;
     KiilzEm game;
@@ -35,32 +34,33 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         new MainMenuButtons(this, this);
-        listOfbuttons = stage.getActors();
+        listOfButtons = stage.getActors();
 
-        listOfbuttons.get(0).addListener(new ClickListener() {
+        listOfButtons.get(0).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                MusicsAndSounds.sound.play(MusicsAndSounds.soundSliderValue);
+                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
                 game.setScreen(new GameScreen(game));
                 stage.dispose();
             }
         });
-        listOfbuttons.get(1).addListener(new ClickListener() {
+        listOfButtons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
                 isButtonClicked = true;
                 stage.dispose();
-                //hide();
+
             }
         });
-        listOfbuttons.get(2).addListener(new ClickListener() {
+        listOfButtons.get(2).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.exit();
+                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                Gdx.app.exit();
             }
         });
     }
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear(1, 1, 1, 1);
@@ -75,27 +75,22 @@ public class MainMenuScreen implements Screen {
             screen.render(delta);
         }
     }
-
     @Override
     public void resize(int width, int height) {
 
     }
-
     @Override
     public void pause() {
 
     }
-
     @Override
     public void resume() {
 
     }
-
     @Override
     public void hide() {
 
     }
-
     @Override
     public void dispose() {
         stage.dispose();

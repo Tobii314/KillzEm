@@ -1,12 +1,12 @@
 package com.game.buttons;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.game.MusicsAndSounds;
+import com.game.ConfigurationFields;
 import com.game.screens.SettingsScreen;
 
 public class SettingButtons {
-    private boolean isDownloaded = true;
     SettingsScreen settingsScreen;
     public Slider finalMusicSlider;
     public Slider finalSoundSlider;
@@ -16,14 +16,19 @@ public class SettingButtons {
     final String STR_MUSIC = "Music";
     final String STR_SOUND = "Sound";
     final String STR_REPORT = "Report of bugs";
-
-
     public SettingButtons(SettingsScreen settingsScreen) {
         skin = new Skin(Gdx.files.internal("skin2/skin.json"));
         table = new Table();
         table.setFillParent(true);
         this.settingsScreen = settingsScreen;
         addButtons();
+    }
+    public Actor activateButtonField() {
+        TextField textField = new TextField("write me on mail: illyaarlachov@gmail.com", skin);
+        textField.setDisabled(true);
+        textField.setPosition(950,300);
+        textField.setSize(500,70);
+        return textField;
     }
     public void addButtons() {
         TextButton buttonBack = new TextButton(STR_BACK, skin);
@@ -40,8 +45,8 @@ public class SettingButtons {
         Slider musicSlider = new Slider(0, 1, 0.1f, false, skin);
         musicSlider.setSize(300,40);
         musicSlider.setPosition(800, Gdx.graphics.getHeight()+400);
-        if (MusicsAndSounds.counter > 0) {
-            musicSlider.setValue(MusicsAndSounds.musicSliderValue);
+        if (ConfigurationFields.counterMusic > 0) {
+            musicSlider.setValue(ConfigurationFields.musicSliderValue);
         } else {
             musicSlider.setValue(1f);
         }
@@ -51,8 +56,8 @@ public class SettingButtons {
         Slider soundSlider = new Slider(0, 1, 0.1f, false, skin);
         soundSlider.setSize(300,40);
         soundSlider.setPosition(800, Gdx.graphics.getHeight()+250);
-        if (MusicsAndSounds.counter > 0) {
-            soundSlider.setValue(MusicsAndSounds.soundSliderValue);
+        if (ConfigurationFields.counterSound > 0) {
+            soundSlider.setValue(ConfigurationFields.soundSliderValue);
         } else {
             soundSlider.setValue(1f);
         }
@@ -71,6 +76,5 @@ public class SettingButtons {
         soundText.setFontScale(1.5f);
         soundText.setPosition(900,Gdx.graphics.getHeight()+325);
         table.addActor(soundText);
-        isDownloaded = false;
     }
 }

@@ -18,7 +18,6 @@ public class MainMenuButtons {
         skin = new Skin(Gdx.files.internal("skin1/button.json"));
         addButtons();
     }
-
     public void addButtons() {
         TextButton button1 = new TextButton(STR_PLAY, skin);
         button1.setSize(300, 100);
