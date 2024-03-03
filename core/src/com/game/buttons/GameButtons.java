@@ -1,6 +1,7 @@
 package com.game.buttons;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -20,12 +21,13 @@ public class GameButtons {
 
     public void addButtons() {
         ImageButton panzer = new ImageButton(skinPanzer);
-        panzer.setPosition(-100, -250);
-        stage.stage.addActor(panzer);
+        panzer.setPosition(0, 0);
+
+        stage.buttonStage.addActor(panzer);
 
         ImageTextButton menu = new ImageTextButton("MENU", skinMenuButton);
         menu.setPosition(1700,925);
         menu.setSize(100f,100f);
-        stage.stage.addActor(menu);
+        stage.buttonStage.addActor(menu);
     }
 }
