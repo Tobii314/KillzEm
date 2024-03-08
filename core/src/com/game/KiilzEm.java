@@ -6,11 +6,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.game.screens.MainMenuScreen;
+import java.util.ArrayList;
 
 import static com.game.ConfigurationFields.id;
 import static com.game.ConfigurationFields.sound;
 
 public class KiilzEm extends Game {
+	public static ArrayList<Boolean> listOfDead = new ArrayList<Boolean>();
 	public SpriteBatch batch;
 	public BitmapFont font;
 	public Music music;
@@ -25,6 +27,7 @@ public class KiilzEm extends Game {
 		sound.pause(id);
 		music.setLooping(true);
 		music.play();
+		setListOfDead();
 	}
 	@Override
 	public void render () {
@@ -35,5 +38,10 @@ public class KiilzEm extends Game {
 		batch.dispose();
 		font.dispose();
 		music.dispose();
+	}
+	public void setListOfDead() {
+		for (int i = 0; i < 26; i++) {
+			listOfDead.add(false);
+		}
 	}
 }

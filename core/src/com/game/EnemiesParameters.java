@@ -2,7 +2,7 @@ package com.game;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class EnemiesTexture {
+public class EnemiesParameters {
     public static Texture texture1 = new Texture("Enemies/A.png");
     public static Texture texture2 = new Texture("Enemies/B.png");
     public static Texture texture3 = new Texture("Enemies/C.png");
@@ -29,4 +29,15 @@ public class EnemiesTexture {
     public static Texture texture24 = new Texture("Enemies/X.png");
     public static Texture texture25 = new Texture("Enemies/Y.png");
     public static Texture texture26 = new Texture("Enemies/Z.png");
+
+    public static float hp1 = 100;
+    public static float hp2 = 250;
+    public static float hp3 = 800;
+    public static float hp4 = 3_000;
+    public static float hp5 = 12_000;
+    public static float hp6 = 90_000;
+    public static float hp7 = 350_000;
+    public static float hp8 = 1_300_000;
+    public static float hp9 = 4_500_000;
+    public static float hp10 = 15_500_000;
 }

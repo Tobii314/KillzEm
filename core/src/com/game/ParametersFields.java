@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public class ParametersFields {
-    public static long damage = 0;
+    public static long damage = 1000;
     public static double criticalChance = 0;
     public static long criticalDamage = 0;
     public static double poisonChance = 10;
