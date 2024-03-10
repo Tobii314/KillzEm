@@ -9,7 +9,7 @@ import com.game.screens.MainMenuScreen;
 import java.util.ArrayList;
 
 import static com.game.ConfigurationFields.id;
-import static com.game.ConfigurationFields.sound;
+import static com.game.ConfigurationFields.soundClick;
 
 public class KiilzEm extends Game {
 	public static ArrayList<Boolean> listOfDead = new ArrayList<Boolean>();
@@ -22,9 +22,11 @@ public class KiilzEm extends Game {
 		font = new BitmapFont();
 		this.setScreen(new MainMenuScreen(this));
 		music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
-		ConfigurationFields.sound = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
-		id = ConfigurationFields.sound.play();
-		sound.pause(id);
+		ConfigurationFields.soundClick = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
+		ConfigurationFields.cannonExplosion = Gdx.audio.newSound(Gdx.files.internal("ExplosionCannon.mp3"));
+		ConfigurationFields.bulletExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
+		///id = ConfigurationFields.soundClick.play();
+		//soundClick.pause(id);
 		music.setLooping(true);
 		music.play();
 		setListOfDead();

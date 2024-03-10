@@ -42,14 +42,14 @@ public class SettingsScreen implements Screen {
         listOfButtons.get(0).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(soundSliderValue);
+                ConfigurationFields.soundClick.play(soundSliderValue);
                 mainMenuScreen.game.setScreen(new MainMenuScreen(game));
             }
         });
         listOfButtons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(soundSliderValue);
+                ConfigurationFields.soundClick.play(soundSliderValue);
                 overlayStage.addActor(settingButtons.activateButtonField());
             }
         });
@@ -57,7 +57,7 @@ public class SettingsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicSliderValue = settingButtons.finalMusicSlider.getValue();
-                ConfigurationFields.sound.play(soundSliderValue);
+                ConfigurationFields.soundClick.play(soundSliderValue);
                 game.music.setVolume(musicSliderValue);
                 ConfigurationFields.counterMusic++;
             }
@@ -66,8 +66,8 @@ public class SettingsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 soundSliderValue = settingButtons.finalSoundSlider.getValue();
-                ConfigurationFields.sound.setVolume(id, soundSliderValue);
-                ConfigurationFields.sound.play(soundSliderValue);
+                ConfigurationFields.soundClick.setVolume(id, soundSliderValue);
+                ConfigurationFields.soundClick.play(soundSliderValue);
                 ConfigurationFields.counterSound++;
             }
         });

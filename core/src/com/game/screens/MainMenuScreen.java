@@ -39,7 +39,7 @@ public class MainMenuScreen implements Screen {
         listOfButtons.get(0).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 game.setScreen(new GameScreen(game));
                 stage.dispose();
             }
@@ -47,7 +47,7 @@ public class MainMenuScreen implements Screen {
         listOfButtons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 isButtonClicked = true;
                 stage.dispose();
 
@@ -56,7 +56,7 @@ public class MainMenuScreen implements Screen {
         listOfButtons.get(2).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 Gdx.app.exit();
             }
         });

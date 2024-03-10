@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Bullet extends Actor {
-    public long damage;
+    public float damage;
     public long critDamage;
     public double critChance;
     public Texture texture;
     public float x;
     private float y;
 
-    public Bullet(Texture texture, long damage, long critDamage, double critChance) {
+    public Bullet(Texture texture, float damage, long critDamage, double critChance) {
         this.damage = damage;
         this.critDamage = critDamage;
         this.critChance = critChance;

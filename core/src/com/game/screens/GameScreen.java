@@ -40,13 +40,17 @@ public class GameScreen implements Screen {
     public static Map<Integer, Float> hpEnemies = new HashMap<>();
     private final Skin skinProgressBar;
     AddEnemys addEnemys;
+    int poisonCounter = 0;
+    int freezeCounter = 0;
+    boolean isPoisoned = false;
+    boolean isFrozen = false;
 
     public GameScreen(KiilzEm game) {
         this.game = game;
         addEnemys = new AddEnemys();
         hashMap = addMap();
         hpEnemies = addMapHitPoints();
-        skinProgressBar = new Skin(Gdx.files.internal("skin2/skin.json"));
+        skinProgressBar = new Skin(Gdx.files.internal("ProgressBar/bar.json"));
     }
 
     @Override
@@ -67,7 +71,8 @@ public class GameScreen implements Screen {
         listOfButtons = buttonStage.getActors();
 
         hitPointsBar = new ProgressBar(0f, hashMap.get(GameScreen.counterForEnemies).getHitPoints(),
-                hashMap.get(GameScreen.counterForEnemies).getHitPoints() / 100f, false, skinProgressBar);
+                hashMap.get(GameScreen.counterForEnemies).getHitPoints() / 1000f, false, skinProgressBar);
+        hitPointsBar.setValue(hpEnemies.get(counterForEnemies));
         hitPointsBar.setSize(300,100);
         hitPointsBar.setPosition(1500,500);
         buttonStage.addActor(hitPointsBar);
@@ -76,7 +81,7 @@ public class GameScreen implements Screen {
         listOfButtons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 game.setScreen(new MainMenuScreen(game));
                 buttonStage.dispose();
                 bulletStage.dispose();
@@ -86,37 +91,37 @@ public class GameScreen implements Screen {
         listOfButtons.get(2).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if ((counterForEnemies == 26) || !(KiilzEm.listOfDead.get(counterForEnemies-1))) {
                     return;
                 } else {
                     counterForEnemies++;
-                    buttonStage.getRoot().removeActor(hitPointsBar);
-                    hitPointsBar = new ProgressBar(0f, hpEnemies.get(counterForEnemies),
-                            hpEnemies.get(counterForEnemies)/ 100f, false, skinProgressBar);
-                    hitPointsBar.setSize(300,100);
-                    hitPointsBar.setPosition(1500,500);
-                    buttonStage.addActor(hitPointsBar);
+                    changeProgressBar();
                 }
             }
         });
         listOfButtons.get(3).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.sound.play(ConfigurationFields.soundSliderValue);
+                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if (counterForEnemies == 1) {
                     return;
                 } else {
                     counterForEnemies--;
-                    hitPointsBar = new ProgressBar(0f, hpEnemies.get(counterForEnemies),
-                            hpEnemies.get(counterForEnemies) / 100f, false, skinProgressBar);
-                    hitPointsBar.setSize(300,100);
-                    hitPointsBar.setPosition(1500,500);
-                    buttonStage.addActor(hitPointsBar);
+                    changeProgressBar();
                 }
             }
         });
-
+    }
+    private void changeProgressBar() {
+        buttonStage.getRoot().removeActor(hitPointsBar);
+        hashMap.get(counterForEnemies).setNewHitPoints(hpEnemies.get(counterForEnemies));
+        hitPointsBar = new ProgressBar(0f, hpEnemies.get(counterForEnemies),
+                hpEnemies.get(counterForEnemies) / 1000f, false, skinProgressBar);
+        hitPointsBar.setSize(300,100);
+        hitPointsBar.setPosition(1500,500);
+        hitPointsBar.setValue(hpEnemies.get(counterForEnemies));
+        buttonStage.addActor(hitPointsBar);
     }
 
     ClickListener clickListener = new ClickListener() {
@@ -124,12 +129,14 @@ public class GameScreen implements Screen {
         public void clicked(InputEvent event, float x, float y) {
             result = RandomNumber();
             freeze = coinFlip();
+            ConfigurationFields.cannonExplosion.play(ConfigurationFields.soundSliderValue);
             if ((result < ParametersFields.poisonChance) && (!freeze)) {
                 bullet = new PoisonBullet(ParametersFields.texture3, ParametersFields.damage,
                         ParametersFields.criticalDamage, ParametersFields.criticalChance,
                         ParametersFields.poisonChance);
                 bulletStage.addActor(bullet);
                 listOfBullets.add(bullet);
+
             } else if ((result < ParametersFields.freezeChance) && (freeze)) {
                 bullet = new FreezeBullet(ParametersFields.texture2, ParametersFields.damage,
                         ParametersFields.criticalDamage, ParametersFields.criticalChance,
@@ -154,8 +161,31 @@ public class GameScreen implements Screen {
         //координаты для врагов 1000, -150
         game.batch.draw(hashMap.get(counterForEnemies).getTexture(), 1000, -150);
 
+        if (!(hashMap.get(counterForEnemies).getRegeneration() == 0f)) {
+            if (isFrozen) {
+                if (freezeCounter < 180) {
+                    freezeCounter++;
+                } else {
+                    isFrozen = false;
+                    freezeCounter = 0;
+                }
+            } else {
+                hashMap.get(counterForEnemies).setHitPointsPlus(hashMap.get(counterForEnemies).getRegeneration());
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() + hashMap.get(counterForEnemies).getRegeneration());
+            }
+        }
 
-
+        if (isPoisoned) {
+            if (poisonCounter < 180) {
+                hashMap.get(counterForEnemies).setHitPoints(ParametersFields.damage / 36);
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - ParametersFields.damage / 36);
+                System.out.println(hashMap.get(counterForEnemies).getHitPoints());
+                poisonCounter++;
+            } else {
+                isPoisoned = false;
+                poisonCounter = 0;
+            }
+        }
         if (!listOfBullets.isEmpty()) {
             Iterator<Bullet> iterator = listOfBullets.iterator();
             while (iterator.hasNext()) {
@@ -163,11 +193,23 @@ public class GameScreen implements Screen {
                 game.batch.draw(currentBullet.getTexture(), currentBullet.getX(), currentBullet.getY());
                 currentBullet.setX(deltaX);
                 if (currentBullet.getX() > 1500) {
-                    hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage);
-                    hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() -currentBullet.damage);
-                    System.out.println(hashMap.get(counterForEnemies).getHitPoints());
-                    iterator.remove();
-                    game.batch.draw(explosionImage, 1500, 125);
+                    if (currentBullet instanceof FreezeBullet) {
+                        whenBulletComes(currentBullet);
+                        isFrozen = true;
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+                    } if (currentBullet instanceof PoisonBullet) {
+                        whenBulletComes(currentBullet);
+                        isPoisoned = true;
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+
+                    } if (!(currentBullet instanceof PoisonBullet) && !(currentBullet instanceof FreezeBullet)) {
+                        whenBulletComes(currentBullet);
+                        //System.out.println(hashMap.get(counterForEnemies).getHitPoints());
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+                    }
                 }
             }
         }
@@ -182,8 +224,17 @@ public class GameScreen implements Screen {
         enemiesStage.act();
         enemiesStage.draw();
     }
-
-    public boolean coinFlip() {
+    private void whenBulletComes(Bullet currentBullet) {
+        ConfigurationFields.bulletExplosion.play(ConfigurationFields.soundSliderValue);
+        if (!(hashMap.get(counterForEnemies).getShield() == 0f)) {
+            hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield()));
+            hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - addShield(hashMap.get(counterForEnemies).getShield()));
+        } else {
+            hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage);
+            hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - currentBullet.damage);
+        }
+    }
+    private boolean coinFlip() {
         Random random = new Random();
         return random.nextBoolean();
     }
@@ -195,6 +246,13 @@ public class GameScreen implements Screen {
         result = randomInt + randomDecimal;
         return result;
     }
+    private float addShield(float shield) {
+        float hundred = 100;
+        hundred -= shield;
+        float activeHundred = hundred / 100f;
+        return ParametersFields.damage * activeHundred;
+    }
+
 
     public Map<Integer, Enemy> addMap() {
         Map<Integer, Enemy> map = new HashMap<>();
@@ -205,30 +263,30 @@ public class GameScreen implements Screen {
         map.put(4, addEnemys.firstTierEnemy(EnemiesParameters.texture4, EnemiesParameters.hp4));
         map.put(5, addEnemys.firstTierEnemy(EnemiesParameters.texture5, EnemiesParameters.hp5));
         //// 2 тир
-        map.put(6, addEnemys.secondTierEnemy(EnemiesParameters.texture6, EnemiesParameters.hp6, 0.5));
-        map.put(7, addEnemys.secondTierEnemy(EnemiesParameters.texture7, EnemiesParameters.hp7, 1.0));
-        map.put(8, addEnemys.secondTierEnemy(EnemiesParameters.texture8, EnemiesParameters.hp8, 1.8));
-        map.put(9, addEnemys.secondTierEnemy(EnemiesParameters.texture9, EnemiesParameters.hp9, 3.0));
-        map.put(10, addEnemys.secondTierEnemy(EnemiesParameters.texture10, EnemiesParameters.hp10, 4.5));
+        map.put(6, addEnemys.secondTierEnemy(EnemiesParameters.texture6, EnemiesParameters.hp6, 1.0f));
+        map.put(7, addEnemys.secondTierEnemy(EnemiesParameters.texture7, EnemiesParameters.hp7, 2.0f));
+        map.put(8, addEnemys.secondTierEnemy(EnemiesParameters.texture8, EnemiesParameters.hp8, 3.5f));
+        map.put(9, addEnemys.secondTierEnemy(EnemiesParameters.texture9, EnemiesParameters.hp9, 5.0f));
+        map.put(10, addEnemys.secondTierEnemy(EnemiesParameters.texture10, EnemiesParameters.hp10, 7.5f));
         //// 3 тир
-        //map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, 120_000_000, 6.0, 10_000)); //reg 0.5%
-        //map.put(12, addEnemys.thirdTierEnemy(EnemiesParameters.texture12, 500_000_000, 8.0, 50_000)); // reg 0.625%
-        //map.put(13, addEnemys.thirdTierEnemy(EnemiesParameters.texture13, 1_750_000_000, 10.0, 220_000)); // reg 0.75%
-       // map.put(14, addEnemys.thirdTierEnemy(EnemiesParameters.texture14, 6_000_000_000L, 14.0, 1_000_000)); // reg 1%
-       // map.put(15, addEnemys.thirdTierEnemy(EnemiesParameters.texture15, 20_000_000_000L, 16.5, 4_150_000)); // reg 1.25%
+        map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, EnemiesParameters.hp11, 9.0f, 0.053f)); //reg 4%  //0.0067f
+        map.put(12, addEnemys.thirdTierEnemy(EnemiesParameters.texture12, EnemiesParameters.hp12, 11.0f, 0.0167f)); // reg 4%
+        map.put(13, addEnemys.thirdTierEnemy(EnemiesParameters.texture13, EnemiesParameters.hp13, 13.0f, 0.67f)); // reg 5%
+        map.put(14, addEnemys.thirdTierEnemy(EnemiesParameters.texture14, EnemiesParameters.hp14, 15.0f, 2.917f)); // reg 7%
+        map.put(15, addEnemys.thirdTierEnemy(EnemiesParameters.texture15, EnemiesParameters.hp15, 17.5f, 10f)); // reg 8%
         //// 4 тир
-        //map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, 125_000_000_000L, 20.0, 35_000_000, 3.0)); // reg 1.625%
-        //map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, 420_000_000_000L, 22.5, 280_000_000, 5.0)); // reg 2%
-        //map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, 1_000_000_000_000L, 25.0, 800_000_000, 7.5)); // reg 4.75%
-        //map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, 1_000_000_000_000L, 25.0, 800_000_000, 7.5)); // reg 4.75%
-        //map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, 1_000_000_000_000L, 25.0, 800_000_000, 7.5)); // reg 4.75%
+        map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, EnemiesParameters.hp16, 22.5f, 100f, 3.0)); // reg 10%
+        map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, EnemiesParameters.hp17, 24.0f, 291.6f, 5.0)); // reg 10%
+        map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, EnemiesParameters.hp18, 26.0f, 937.5f, 7.5)); // reg 12.5%
+        map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, EnemiesParameters.hp19, 28.0f, 2_500f, 7.5)); // reg 12.5%
+        map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, EnemiesParameters.hp20, 30.0f, 6_375f, 7.5)); // reg 15%
         //// 5 тир
-       // map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
-        //map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
-        //map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
-        //map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
-       // map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
-       // map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, 999_999_999_999_999_999L, 25.0, 80_000_000_000_000L, 50.0, 50.0)); // reg 5%
+        map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, EnemiesParameters.hp21, 35.0f, 59_500f, 50.0, 50.0)); // reg 17.5%
+        map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, EnemiesParameters.hp22, 37.0f, 131_250f, 50.0, 50.0)); // reg 17.5%
+        map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, EnemiesParameters.hp23, 40.0f, 300_000f, 50.0, 50.0)); // reg 20%
+        map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, EnemiesParameters.hp24, 42.5f, 600_000f, 50.0, 50.0)); // reg 20%
+        map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, EnemiesParameters.hp25, 45.0f, 1_467_000f, 50.0, 50.0)); // reg 22%
+        map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, EnemiesParameters.hp26, 50.0f, 4_162_500f, 50.0, 50.0)); // reg 25%
         return map;
     }
 
@@ -244,6 +302,22 @@ public class GameScreen implements Screen {
         map.put(8, (EnemiesParameters.hp8));
         map.put(9, (EnemiesParameters.hp9));
         map.put(10, (EnemiesParameters.hp10));
+        map.put(11, (EnemiesParameters.hp11));
+        map.put(12, (EnemiesParameters.hp12));
+        map.put(13, (EnemiesParameters.hp13));
+        map.put(14, (EnemiesParameters.hp14));
+        map.put(15, (EnemiesParameters.hp15));
+        map.put(16, (EnemiesParameters.hp16));
+        map.put(17, (EnemiesParameters.hp17));
+        map.put(18, (EnemiesParameters.hp18));
+        map.put(19, (EnemiesParameters.hp19));
+        map.put(20, (EnemiesParameters.hp20));
+        map.put(21, (EnemiesParameters.hp21));
+        map.put(22, (EnemiesParameters.hp22));
+        map.put(23, (EnemiesParameters.hp23));
+        map.put(24, (EnemiesParameters.hp24));
+        map.put(25, (EnemiesParameters.hp25));
+        map.put(26, (EnemiesParameters.hp26));
         return map;
     }
 

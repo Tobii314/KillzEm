@@ -9,14 +9,14 @@ public class AddEnemys {
                 .hitPoints(hitPoints)
                 .build();
     }
-    public Enemy secondTierEnemy(Texture texture, float hitPoints, double shield) {
+    public Enemy secondTierEnemy(Texture texture, float hitPoints, float shield) {
         return Enemy.builder()
                 .texture(texture)
                 .hitPoints(hitPoints)
                 .shield(shield)
                 .build();
     }
-    public Enemy thirdTierEnemy(Texture texture, float hitPoints, double shield, long regen) {
+    public Enemy thirdTierEnemy(Texture texture, float hitPoints, float shield, float regen) {
         return Enemy.builder()
                 .texture(texture)
                 .hitPoints(hitPoints)
@@ -24,7 +24,7 @@ public class AddEnemys {
                 .regeneration(regen)
                 .build();
     }
-    public Enemy fourthTierEnemy(Texture texture, float hitPoints, double shield, long regen, double poisonResist) {
+    public Enemy fourthTierEnemy(Texture texture, float hitPoints, float shield, float regen, double poisonResist) {
         return Enemy.builder()
                 .texture(texture)
                 .hitPoints(hitPoints)
@@ -33,7 +33,7 @@ public class AddEnemys {
                 .poisonResistance(poisonResist)
                 .build();
     }
-    public Enemy fifthTierEnemy(Texture texture, float hitPoints, double shield, long regen, double poisonResist, double freezeResist) {
+    public Enemy fifthTierEnemy(Texture texture, float hitPoints, float shield, float regen, double poisonResist, double freezeResist) {
         return Enemy.builder()
                 .texture(texture)
                 .hitPoints(hitPoints)

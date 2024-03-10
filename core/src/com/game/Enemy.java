@@ -7,24 +7,20 @@ import static com.game.screens.GameScreen.counterForEnemies;
 import static com.game.screens.GameScreen.hpEnemies;
 
 public class Enemy extends Actor {
-    private boolean wasDead = false;
     private final Texture texture;
     private float hitPoints;
-    private final double shield;
-    private final long regeneration;
+    private final float shield;
+    private final float regeneration;
     private final double poisonResistance;
     private final double freezeResistance;
 
-    public Enemy(Texture texture, float hitPoints, double shield, long regeneration, double poisonResistance, double freezeResistance) {
+    public Enemy(Texture texture, float hitPoints, float shield, float regeneration, double poisonResistance, double freezeResistance) {
         this.texture = texture;
         this.hitPoints = hitPoints;
         this.shield = shield;
         this.regeneration = regeneration;
         this.poisonResistance = poisonResistance;
         this.freezeResistance = freezeResistance;
-    }
-    public Boolean wasDead() {
-        return this.wasDead;
     }
     public Texture getTexture() {
         return this.texture;
@@ -43,6 +39,23 @@ public class Enemy extends Actor {
         }
         return this.hitPoints;
     }
+    public float setHitPointsPlus(float regen) {
+        this.hitPoints += regen;
+        if (this.hitPoints >= hpEnemies.get(counterForEnemies)) {
+            this.hitPoints = hpEnemies.get(counterForEnemies);
+        }
+        return this.hitPoints;
+    }
+    public float setNewHitPoints(float hitPoints) {
+        this.hitPoints = hitPoints;
+        return this.hitPoints;
+    }
+    public float getShield() {
+        return this.shield;
+    }
+    public float getRegeneration() {
+        return this.regeneration;
+    }
     public static EnemyBuilder builder() {
         return new EnemyBuilder();
     }
@@ -50,8 +63,8 @@ public class Enemy extends Actor {
     public static class EnemyBuilder {
         private Texture texture;
         private float hitPoints;
-        private double shield;
-        private long regeneration;
+        private float shield;
+        private float regeneration;
         private double poisonResistance;
         private double freezeResistance;
         public EnemyBuilder texture(Texture texture) {
@@ -63,11 +76,11 @@ public class Enemy extends Actor {
             return this;
         }
 
-        public EnemyBuilder shield(double shield) {
+        public EnemyBuilder shield(float shield) {
             this.shield = shield;
             return this;
         }
-        public EnemyBuilder regeneration(long regeneration) {
+        public EnemyBuilder regeneration(float regeneration) {
             this.regeneration = regeneration;
             return this;
         }
