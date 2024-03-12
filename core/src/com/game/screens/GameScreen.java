@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -29,6 +32,8 @@ public class GameScreen implements Screen {
     Bullet bullet;
     Array<Actor> listOfButtons = new Array<>();
     ArrayList<Bullet> listOfBullets = new ArrayList<>();
+
+    ArrayList<DamageLabel> numbersList = new ArrayList<>();
     public Stage buttonStage;
     public Stage bulletStage;
     public Stage enemiesStage;
@@ -44,6 +49,11 @@ public class GameScreen implements Screen {
     int freezeCounter = 0;
     boolean isPoisoned = false;
     boolean isFrozen = false;
+    double resultOfCritChance;
+    double resultOfResistPoison;
+    double resultOfResistFreeze;
+    Skin skinOfNumberDamage;
+    Skin skinOfNumberCritDamage;
 
     public GameScreen(KiilzEm game) {
         this.game = game;
@@ -51,11 +61,13 @@ public class GameScreen implements Screen {
         hashMap = addMap();
         hpEnemies = addMapHitPoints();
         skinProgressBar = new Skin(Gdx.files.internal("ProgressBar/bar.json"));
+        skinOfNumberDamage = new Skin(Gdx.files.internal("DamageString/damage.json"));
+        skinOfNumberCritDamage = new Skin(Gdx.files.internal("DamageString/critDamage.json"));
     }
-
     @Override
     public void show() {
         image = new Texture("GameScreen.jpg");
+        addFonts();
         explosionImage = new Texture("explosion.png");
         InputMultiplexer multiplexer = new InputMultiplexer();
         buttonStage = new Stage(new ScreenViewport());
@@ -74,7 +86,7 @@ public class GameScreen implements Screen {
                 hashMap.get(GameScreen.counterForEnemies).getHitPoints() / 1000f, false, skinProgressBar);
         hitPointsBar.setValue(hpEnemies.get(counterForEnemies));
         hitPointsBar.setSize(300,100);
-        hitPointsBar.setPosition(1500,500);
+        hitPointsBar.setPosition(1500,400);
         buttonStage.addActor(hitPointsBar);
 
         listOfButtons.get(0).addListener(clickListener);
@@ -85,7 +97,6 @@ public class GameScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
                 buttonStage.dispose();
                 bulletStage.dispose();
-                enemiesStage.dispose();
             }
         });
         listOfButtons.get(2).addListener(new ClickListener() {
@@ -113,18 +124,118 @@ public class GameScreen implements Screen {
             }
         });
     }
-    private void changeProgressBar() {
-        buttonStage.getRoot().removeActor(hitPointsBar);
-        hashMap.get(counterForEnemies).setNewHitPoints(hpEnemies.get(counterForEnemies));
-        hitPointsBar = new ProgressBar(0f, hpEnemies.get(counterForEnemies),
-                hpEnemies.get(counterForEnemies) / 1000f, false, skinProgressBar);
-        hitPointsBar.setSize(300,100);
-        hitPointsBar.setPosition(1500,500);
-        hitPointsBar.setValue(hpEnemies.get(counterForEnemies));
-        buttonStage.addActor(hitPointsBar);
-    }
 
-    ClickListener clickListener = new ClickListener() {
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(1, 1, 1, 1);
+        game.batch.begin();
+        game.batch.draw(image, 0, 0);
+
+        //координаты для врагов 1000, -150
+        game.batch.draw(hashMap.get(counterForEnemies).getTexture(), 1000, -150);
+        game.font3.draw(game.batch, "Health: " + parseToString(hashMap.get(counterForEnemies).
+                getHitPoints()), 1525, 750);
+        game.font4.draw(game.batch, "Earning: " + 45, 1525, 710);
+
+        if (counterForEnemies >= 6) {
+            game.font5.draw(game.batch, "Shield: " + hashMap.get(counterForEnemies).getShield(),
+                    1525, 670);
+        }
+        if (counterForEnemies >= 11) {
+            game.font6.draw(game.batch, "Regen: "  + parseToString(hashMap.get(counterForEnemies).
+                            getRegeneration()),  1525, 630);
+        }
+        if (counterForEnemies >= 16) {
+            game.font7.draw(game.batch, "Poison resist: " + hashMap.get(counterForEnemies).getPoisonResistance() + " %",
+                    1525, 590);
+        }
+        if (counterForEnemies >= 21) {
+            game.font8.draw(game.batch, "Freeze resist: " + hashMap.get(counterForEnemies).getFreezeResistance() + " %",
+                    1525, 550);
+        }
+
+        if (!(hashMap.get(counterForEnemies).getRegeneration() == 0f)) {
+            if (isFrozen) {
+                if (freezeCounter < 180) {
+                    freezeCounter++;
+                } else {
+                    isFrozen = false;
+                    freezeCounter = 0;
+                }
+            } else {
+                hashMap.get(counterForEnemies).setHitPointsPlus(hashMap.get(counterForEnemies).getRegeneration());
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() + hashMap.get(counterForEnemies).getRegeneration());
+            }
+        }
+
+        if (isPoisoned) {
+            if (poisonCounter < 180) {
+                hashMap.get(counterForEnemies).setHitPoints(ParametersFields.damage / 36);
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - ParametersFields.damage / 36);
+                //System.out.println(hashMap.get(counterForEnemies).getHitPoints());
+                poisonCounter++;
+            } else {
+                isPoisoned = false;
+                poisonCounter = 0;
+            }
+        }
+        if (!listOfBullets.isEmpty()) {
+            Iterator<Bullet> iterator = listOfBullets.iterator();
+            while (iterator.hasNext()) {
+                Bullet currentBullet = iterator.next();
+                game.batch.draw(currentBullet.getTexture(), currentBullet.getX(), currentBullet.getY());
+                currentBullet.setX(deltaX);
+                if (currentBullet.getX() > 1500) {
+                    if (currentBullet instanceof FreezeBullet) {
+                        whenBulletComes(currentBullet);
+                        resultOfResistFreeze = RandomNumber();
+                        isFrozen = !(resultOfResistFreeze <= hashMap.get(counterForEnemies).getFreezeResistance());
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+                    } if (currentBullet instanceof PoisonBullet) {
+                        whenBulletComes(currentBullet);
+                        resultOfResistPoison = RandomNumber();
+                        isPoisoned = !(resultOfResistPoison <= hashMap.get(counterForEnemies).getPoisonResistance());
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+
+                    } if (!(currentBullet instanceof PoisonBullet) && !(currentBullet instanceof FreezeBullet)) {
+                        whenBulletComes(currentBullet);
+                        System.out.println(hashMap.get(counterForEnemies).getHitPoints());
+                        iterator.remove();
+                        game.batch.draw(explosionImage, 1500, 125);
+                    }
+                }
+
+            }
+        }
+        if (!(numbersList.isEmpty())) {
+            Iterator<DamageLabel> labelIterator = numbersList.iterator();
+            while (labelIterator.hasNext()) {
+                DamageLabel currentLabel = labelIterator.next();
+                if (currentLabel.getIsCrit()) {
+                    game.font2.draw(game.batch, currentLabel.getNumber(), currentLabel.getX(), currentLabel.getY());
+                } else {
+                    game.font.draw(game.batch, currentLabel.getNumber(), currentLabel.getX(), currentLabel.getY());
+                }
+                currentLabel.setX(3);
+                currentLabel.setY(3);
+                if (currentLabel.getX() < 1180) {
+                    labelIterator.remove();
+                }
+            }
+        }
+
+        game.batch.end();
+
+        buttonStage.act();
+        buttonStage.draw();
+
+        bulletStage.act();
+        bulletStage.draw();
+
+    }
+    protected ClickListener clickListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             result = RandomNumber();
@@ -151,88 +262,69 @@ public class GameScreen implements Screen {
             }
         }
     };
-
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(1, 1, 1, 1);
-        game.batch.begin();
-        game.batch.draw(image, 0, 0);
-
-        //координаты для врагов 1000, -150
-        game.batch.draw(hashMap.get(counterForEnemies).getTexture(), 1000, -150);
-
-        if (!(hashMap.get(counterForEnemies).getRegeneration() == 0f)) {
-            if (isFrozen) {
-                if (freezeCounter < 180) {
-                    freezeCounter++;
-                } else {
-                    isFrozen = false;
-                    freezeCounter = 0;
-                }
-            } else {
-                hashMap.get(counterForEnemies).setHitPointsPlus(hashMap.get(counterForEnemies).getRegeneration());
-                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() + hashMap.get(counterForEnemies).getRegeneration());
-            }
-        }
-
-        if (isPoisoned) {
-            if (poisonCounter < 180) {
-                hashMap.get(counterForEnemies).setHitPoints(ParametersFields.damage / 36);
-                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - ParametersFields.damage / 36);
-                System.out.println(hashMap.get(counterForEnemies).getHitPoints());
-                poisonCounter++;
-            } else {
-                isPoisoned = false;
-                poisonCounter = 0;
-            }
-        }
-        if (!listOfBullets.isEmpty()) {
-            Iterator<Bullet> iterator = listOfBullets.iterator();
-            while (iterator.hasNext()) {
-                Bullet currentBullet = iterator.next();
-                game.batch.draw(currentBullet.getTexture(), currentBullet.getX(), currentBullet.getY());
-                currentBullet.setX(deltaX);
-                if (currentBullet.getX() > 1500) {
-                    if (currentBullet instanceof FreezeBullet) {
-                        whenBulletComes(currentBullet);
-                        isFrozen = true;
-                        iterator.remove();
-                        game.batch.draw(explosionImage, 1500, 125);
-                    } if (currentBullet instanceof PoisonBullet) {
-                        whenBulletComes(currentBullet);
-                        isPoisoned = true;
-                        iterator.remove();
-                        game.batch.draw(explosionImage, 1500, 125);
-
-                    } if (!(currentBullet instanceof PoisonBullet) && !(currentBullet instanceof FreezeBullet)) {
-                        whenBulletComes(currentBullet);
-                        //System.out.println(hashMap.get(counterForEnemies).getHitPoints());
-                        iterator.remove();
-                        game.batch.draw(explosionImage, 1500, 125);
-                    }
-                }
-            }
-        }
-        game.batch.end();
-
-        buttonStage.act();
-        buttonStage.draw();
-
-        bulletStage.act();
-        bulletStage.draw();
-
-        enemiesStage.act();
-        enemiesStage.draw();
+    private void changeProgressBar() {
+        buttonStage.getRoot().removeActor(hitPointsBar);
+        hashMap.get(counterForEnemies).setNewHitPoints(hpEnemies.get(counterForEnemies));
+        hitPointsBar = new ProgressBar(0f, hpEnemies.get(counterForEnemies),
+                hpEnemies.get(counterForEnemies) / 1000f, false, skinProgressBar);
+        hitPointsBar.setSize(300,100);
+        hitPointsBar.setPosition(1500,400);
+        hitPointsBar.setValue(hpEnemies.get(counterForEnemies));
+        buttonStage.addActor(hitPointsBar);
     }
     private void whenBulletComes(Bullet currentBullet) {
         ConfigurationFields.bulletExplosion.play(ConfigurationFields.soundSliderValue);
-        if (!(hashMap.get(counterForEnemies).getShield() == 0f)) {
-            hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield()));
-            hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - addShield(hashMap.get(counterForEnemies).getShield()));
+        resultOfCritChance = RandomNumber();
+        addDamageFont();
+        if (resultOfCritChance <= ParametersFields.criticalChance) {
+            if (!(hashMap.get(counterForEnemies).getShield() == 0f)) {
+                hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield(), ParametersFields.damage * ParametersFields.criticalDamage));
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
+
+            } else {
+                hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage * ParametersFields.criticalDamage);
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
+            }
         } else {
-            hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage);
-            hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints() - currentBullet.damage);
+            if (!(hashMap.get(counterForEnemies).getShield() == 0f)) {
+                hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield(), ParametersFields.damage));
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
+            } else {
+                hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage);
+                hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
+            }
         }
+    }
+    private float addShield(float shield, float damage) {
+        float hundred = 100;
+        hundred -= shield;
+        float activeHundred = hundred / 100f;
+        return damage * activeHundred;
+    }
+    private void addDamageFont() {
+        if (resultOfCritChance <= ParametersFields.criticalChance) {
+            numbersList.add(new DamageLabel(parseToString(addShield(hashMap.get(counterForEnemies).getShield(),
+                    ParametersFields.damage) * ParametersFields.criticalDamage), 1275,400,true));
+        } else {
+            numbersList.add(new DamageLabel(parseToString(addShield(hashMap.get(counterForEnemies).getShield(),
+                    ParametersFields.damage)), 1275, 400, false));
+        }
+    }
+
+    private String parseToString(float damage) {
+        String string;
+        if (damage < 0.01f) {
+            string = (int)(damage * 1_000_000) + "";
+        } else if (damage < 1.0f) {
+            string = (int)(damage * 1000) + "k";
+        } else if (damage < 1_000.0f) {
+            string = (int)(damage) + "m";
+        } else if (damage < 1_000_000.0f) {
+            string = (int) (damage / 1000) + "b";
+        } else {
+            string = (int) (damage / 1_000_000) + "t";
+        }
+        return string;
     }
     private boolean coinFlip() {
         Random random = new Random();
@@ -245,12 +337,6 @@ public class GameScreen implements Screen {
         double randomDecimal = random.nextInt(10) / 10.0;
         result = randomInt + randomDecimal;
         return result;
-    }
-    private float addShield(float shield) {
-        float hundred = 100;
-        hundred -= shield;
-        float activeHundred = hundred / 100f;
-        return ParametersFields.damage * activeHundred;
     }
 
 
@@ -269,24 +355,24 @@ public class GameScreen implements Screen {
         map.put(9, addEnemys.secondTierEnemy(EnemiesParameters.texture9, EnemiesParameters.hp9, 5.0f));
         map.put(10, addEnemys.secondTierEnemy(EnemiesParameters.texture10, EnemiesParameters.hp10, 7.5f));
         //// 3 тир
-        map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, EnemiesParameters.hp11, 9.0f, 0.053f)); //reg 4%  //0.0067f
+        map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, EnemiesParameters.hp11, 9.0f, 0.0053f)); //reg 4%  //0.0067f
         map.put(12, addEnemys.thirdTierEnemy(EnemiesParameters.texture12, EnemiesParameters.hp12, 11.0f, 0.0167f)); // reg 4%
         map.put(13, addEnemys.thirdTierEnemy(EnemiesParameters.texture13, EnemiesParameters.hp13, 13.0f, 0.67f)); // reg 5%
         map.put(14, addEnemys.thirdTierEnemy(EnemiesParameters.texture14, EnemiesParameters.hp14, 15.0f, 2.917f)); // reg 7%
         map.put(15, addEnemys.thirdTierEnemy(EnemiesParameters.texture15, EnemiesParameters.hp15, 17.5f, 10f)); // reg 8%
         //// 4 тир
-        map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, EnemiesParameters.hp16, 22.5f, 100f, 3.0)); // reg 10%
-        map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, EnemiesParameters.hp17, 24.0f, 291.6f, 5.0)); // reg 10%
-        map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, EnemiesParameters.hp18, 26.0f, 937.5f, 7.5)); // reg 12.5%
-        map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, EnemiesParameters.hp19, 28.0f, 2_500f, 7.5)); // reg 12.5%
-        map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, EnemiesParameters.hp20, 30.0f, 6_375f, 7.5)); // reg 15%
+        map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, EnemiesParameters.hp16, 22.5f, 100f, 10d)); // reg 10%
+        map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, EnemiesParameters.hp17, 24.0f, 291.6f, 15d)); // reg 10%
+        map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, EnemiesParameters.hp18, 26.0f, 937.5f, 20d)); // reg 12.5%
+        map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, EnemiesParameters.hp19, 28.0f, 2_500f, 25d)); // reg 12.5%
+        map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, EnemiesParameters.hp20, 30.0f, 6_375f, 30d)); // reg 15%
         //// 5 тир
-        map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, EnemiesParameters.hp21, 35.0f, 59_500f, 50.0, 50.0)); // reg 17.5%
-        map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, EnemiesParameters.hp22, 37.0f, 131_250f, 50.0, 50.0)); // reg 17.5%
-        map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, EnemiesParameters.hp23, 40.0f, 300_000f, 50.0, 50.0)); // reg 20%
-        map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, EnemiesParameters.hp24, 42.5f, 600_000f, 50.0, 50.0)); // reg 20%
-        map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, EnemiesParameters.hp25, 45.0f, 1_467_000f, 50.0, 50.0)); // reg 22%
-        map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, EnemiesParameters.hp26, 50.0f, 4_162_500f, 50.0, 50.0)); // reg 25%
+        map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, EnemiesParameters.hp21, 35.0f, 59_500f, 35d, 10d)); // reg 17.5%
+        map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, EnemiesParameters.hp22, 37.0f, 131_250f, 37d, 17.5d)); // reg 17.5%
+        map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, EnemiesParameters.hp23, 40.0f, 300_000f, 40d, 25d)); // reg 20%
+        map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, EnemiesParameters.hp24, 42.5f, 600_000f, 43d, 30d)); // reg 20%
+        map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, EnemiesParameters.hp25, 45.0f, 1_467_000f, 45d, 40d)); // reg 22%
+        map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, EnemiesParameters.hp26, 50.0f, 4_162_500f, 50d, 50d)); // reg 25%
         return map;
     }
 
@@ -319,6 +405,22 @@ public class GameScreen implements Screen {
         map.put(25, (EnemiesParameters.hp25));
         map.put(26, (EnemiesParameters.hp26));
         return map;
+    }
+    private void addFonts() {
+        game.font = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font2 = new BitmapFont(Gdx.files.internal(ParametersFields.critDamageLabel));
+        game.font3 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font3.getData().setScale(0.5f);
+        game.font4 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font4.getData().setScale(0.5f);
+        game.font5 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font5.getData().setScale(0.5f);
+        game.font6 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font6.getData().setScale(0.5f);
+        game.font7 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font7.getData().setScale(0.5f);
+        game.font8 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font8.getData().setScale(0.5f);
     }
 
 

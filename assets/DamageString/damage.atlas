@@ -1,0 +1,13 @@
+
+damage.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+damageString
+  rotate: false
+  xy: 1, 1
+  size: 426, 434
+  orig: 426, 434
+  offset: 0, 0
+  index: -1

@@ -33,16 +33,16 @@ public class GameButtons {
         stage.buttonStage.addActor(panzer);
 
         ImageTextButton menu = new ImageTextButton("MENU", skinMenuButton);
-        menu.setPosition(1700,925);
+        menu.setPosition(50,925);
         menu.setSize(100f,100f);
         stage.buttonStage.addActor(menu);
 
         ImageButton rightArrowButton = new ImageButton(rightArrow);
-        rightArrowButton.setPosition(1650, 650);
+        rightArrowButton.setPosition(1650, 850);
         stage.buttonStage.addActor(rightArrowButton);
 
         ImageButton leftArrowButton = new ImageButton(leftArrow);
-        leftArrowButton.setPosition(1550, 650);
+        leftArrowButton.setPosition(1550, 850);
         stage.buttonStage.addActor(leftArrowButton);
 
 

@@ -50,6 +50,13 @@ public class Enemy extends Actor {
         this.hitPoints = hitPoints;
         return this.hitPoints;
     }
+    public double getPoisonResistance() {
+        return this.poisonResistance;
+    }
+    public double getFreezeResistance() {
+        return this.freezeResistance;
+    }
+
     public float getShield() {
         return this.shield;
     }
