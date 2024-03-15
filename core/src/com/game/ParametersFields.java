@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class ParametersFields {
-    public static float damage = 99999.000001f; //0.00001f;
+    public static float damage = 0.000001f; //0.00001f;
     public static double criticalChance = 50;
     public static float criticalDamage = 5;
     public static double poisonChance = 50; //500% от урона за 3 секунды

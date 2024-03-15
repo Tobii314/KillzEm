@@ -1,0 +1,13 @@
+
+ParametersField.png
+size: 256, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+ParametersFields
+  rotate: false
+  xy: 1, 1
+  size: 145, 150
+  orig: 145, 150
+  offset: 0, 0
+  index: -1

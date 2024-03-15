@@ -37,6 +37,7 @@ public class GameScreen implements Screen {
     public Stage buttonStage;
     public Stage bulletStage;
     public Stage enemiesStage;
+    public Stage parametersStage;
     Texture image;
     Texture explosionImage;
     KiilzEm game;
@@ -54,6 +55,9 @@ public class GameScreen implements Screen {
     double resultOfResistFreeze;
     Skin skinOfNumberDamage;
     Skin skinOfNumberCritDamage;
+    private GameParametersScreen screen;
+    boolean isButtonClicked = false;
+    boolean isButtonDoubled = false;
 
     public GameScreen(KiilzEm game) {
         this.game = game;
@@ -73,11 +77,14 @@ public class GameScreen implements Screen {
         buttonStage = new Stage(new ScreenViewport());
         bulletStage = new Stage(new ScreenViewport());
         enemiesStage = new Stage(new ScreenViewport());
+        parametersStage = new Stage(new ScreenViewport());
         multiplexer.addProcessor(buttonStage);
         multiplexer.addProcessor(bulletStage);
         multiplexer.addProcessor(enemiesStage);
+        multiplexer.addProcessor(parametersStage);
         Gdx.input.setInputProcessor(multiplexer);
 
+        screen = new GameParametersScreen(game, this, parametersStage);
         new GameButtons(this);
         enemiesStage.addActor(hashMap.get(1));
         listOfButtons = buttonStage.getActors();
@@ -122,6 +129,23 @@ public class GameScreen implements Screen {
                     changeProgressBar();
                 }
             }
+        });
+        listOfButtons.get(4).addListener(new ClickListener() {
+           @Override
+           public void clicked(InputEvent event, float x, float y) {
+               if (isButtonDoubled) {
+                   ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                   screen.hide();
+                   isButtonDoubled = false;
+               } else {
+                   ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                   isButtonClicked = true;
+                   isButtonDoubled = true;
+                   screen.resume();
+               }
+
+           }
+
         });
     }
 
@@ -234,6 +258,10 @@ public class GameScreen implements Screen {
         bulletStage.act();
         bulletStage.draw();
 
+        if (isButtonClicked) {
+            //screen.show();
+            screen.render(delta);
+        }
     }
     protected ClickListener clickListener = new ClickListener() {
         @Override
@@ -311,7 +339,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    private String parseToString(float damage) {
+    public String parseToString(float damage) {
         String string;
         if (damage < 0.01f) {
             string = (int)(damage * 1_000_000) + "";

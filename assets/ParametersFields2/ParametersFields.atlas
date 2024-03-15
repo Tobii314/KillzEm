@@ -1,0 +1,27 @@
+
+ParametersFields.png
+size: 256, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+Button
+  rotate: false
+  xy: 1, 1
+  size: 65, 65
+  orig: 65, 65
+  offset: 0, 0
+  index: -1
+ButtonClicked
+  rotate: false
+  xy: 148, 153
+  size: 65, 65
+  orig: 65, 65
+  offset: 0, 0
+  index: -1
+ParametersFields
+  rotate: false
+  xy: 1, 68
+  size: 145, 150
+  orig: 145, 150
+  offset: 0, 0
+  index: -1

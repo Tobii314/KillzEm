@@ -1,0 +1,20 @@
+
+plusButton.png
+size: 128, 128
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+Button
+  rotate: false
+  xy: 1, 53
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+ButtonClicked
+  rotate: false
+  xy: 1, 1
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
