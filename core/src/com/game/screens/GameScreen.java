@@ -32,7 +32,6 @@ public class GameScreen implements Screen {
     Bullet bullet;
     Array<Actor> listOfButtons = new Array<>();
     ArrayList<Bullet> listOfBullets = new ArrayList<>();
-
     ArrayList<DamageLabel> numbersList = new ArrayList<>();
     public Stage buttonStage;
     public Stage bulletStage;
@@ -306,11 +305,11 @@ public class GameScreen implements Screen {
         addDamageFont();
         if (resultOfCritChance <= ParametersFields.criticalChance) {
             if (!(hashMap.get(counterForEnemies).getShield() == 0f)) {
-                hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield(), ParametersFields.damage * ParametersFields.criticalDamage));
+                hashMap.get(counterForEnemies).setHitPoints(addShield(hashMap.get(counterForEnemies).getShield(), (float)(ParametersFields.damage * ParametersFields.criticalDamage)));
                 hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
 
             } else {
-                hashMap.get(counterForEnemies).setHitPoints(currentBullet.damage * ParametersFields.criticalDamage);
+                hashMap.get(counterForEnemies).setHitPoints((float) (currentBullet.damage * ParametersFields.criticalDamage));
                 hitPointsBar.setValue(hashMap.get(counterForEnemies).getHitPoints());
             }
         } else {
@@ -331,8 +330,8 @@ public class GameScreen implements Screen {
     }
     private void addDamageFont() {
         if (resultOfCritChance <= ParametersFields.criticalChance) {
-            numbersList.add(new DamageLabel(parseToString(addShield(hashMap.get(counterForEnemies).getShield(),
-                    ParametersFields.damage) * ParametersFields.criticalDamage), 1275,400,true));
+            numbersList.add(new DamageLabel(parseToString((float)(addShield(hashMap.get(counterForEnemies).getShield(),
+                    ParametersFields.damage) * ParametersFields.criticalDamage)), 1275,400,true));
         } else {
             numbersList.add(new DamageLabel(parseToString(addShield(hashMap.get(counterForEnemies).getShield(),
                     ParametersFields.damage)), 1275, 400, false));
