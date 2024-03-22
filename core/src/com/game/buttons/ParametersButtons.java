@@ -1,9 +1,8 @@
 package com.game.buttons;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,12 +17,14 @@ public class ParametersButtons {
     Skin skin;
     GameScreen screen;
     private final Skin plusButton;
+    private final Skin powerButton;
     public ParametersButtons(Stage stage, GameScreen screen) {
         this.stage = stage;
         this.screen = screen;
         skin = new Skin(Gdx.files.internal("ParametersFields2/BigFields.json"));
         miniSkin = new Skin(Gdx.files.internal("ParametersFields/ParametersField.json"));
         plusButton = new Skin(Gdx.files.internal("ParametersFields2/ParametersFields.json"));
+        powerButton = new Skin(Gdx.files.internal("PlusButton/plusButtonPower.json"));
         addButtons();
     }
     private void addButtons() {
@@ -37,6 +38,15 @@ public class ParametersButtons {
         ImageButton plusButton1 = new ImageButton(plusButton);
         plusButton1.setPosition(725, 850);
         stage.addActor(plusButton1);
+
+        ImageButton plusButtonPower = new ImageButton(powerButton);
+        plusButtonPower.setPosition(650, 850);
+        plusButtonPower.setDisabled(ParametersFields.isDisabled);
+        stage.addActor(plusButtonPower);
+
+        Label powerInfo = new Label("Cost: " + screen.parseToString(ParametersFields.damagePrice), miniSkin);
+        powerInfo.setPosition(650, 825);
+        stage.addActor(powerInfo);
 
         Label temperature = new Label("MAX TEMP: " + ParametersFields.maxTemperature, skin);
         temperature.setPosition(375, 775);

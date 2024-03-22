@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -26,6 +26,7 @@ import java.util.*;
 
 public class GameScreen implements Screen {
     ProgressBar hitPointsBar;
+    ProgressBar deBuffBar;
     public static Integer counterForEnemies = 1;
     boolean freeze;
     double result;
@@ -44,6 +45,7 @@ public class GameScreen implements Screen {
     public Map<Integer, Enemy> hashMap = new HashMap<>();
     public static Map<Integer, Float> hpEnemies = new HashMap<>();
     private final Skin skinProgressBar;
+    private final Skin skinDeBuffBar;
     AddEnemys addEnemys;
     int poisonCounter = 0;
     int freezeCounter = 0;
@@ -57,6 +59,9 @@ public class GameScreen implements Screen {
     private GameParametersScreen screen;
     boolean isButtonClicked = false;
     boolean isButtonDoubled = false;
+    private ImageButton panzer;
+    private int localeCounter = 0;
+
 
     public GameScreen(KiilzEm game) {
         this.game = game;
@@ -66,6 +71,7 @@ public class GameScreen implements Screen {
         skinProgressBar = new Skin(Gdx.files.internal("ProgressBar/bar.json"));
         skinOfNumberDamage = new Skin(Gdx.files.internal("DamageString/damage.json"));
         skinOfNumberCritDamage = new Skin(Gdx.files.internal("DamageString/critDamage.json"));
+        skinDeBuffBar = new Skin(Gdx.files.internal("ProgressBar/neon-ui.json"));
     }
     @Override
     public void show() {
@@ -94,8 +100,14 @@ public class GameScreen implements Screen {
         hitPointsBar.setSize(300,100);
         hitPointsBar.setPosition(1500,400);
         buttonStage.addActor(hitPointsBar);
+        deBuffBar = new ProgressBar(0f, 600f, 1f, false, skinDeBuffBar);
+        deBuffBar.setSize(300, 10);
+        deBuffBar.setPosition(100,250);
+        deBuffBar.setVisible(false);
+        buttonStage.addActor(deBuffBar);
+        panzer = (ImageButton) listOfButtons.get(0);
 
-        listOfButtons.get(0).addListener(clickListener);
+        panzer.addListener(clickListener);
         listOfButtons.get(1).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -153,6 +165,36 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(1, 1, 1, 1);
         game.batch.begin();
         game.batch.draw(image, 0, 0);
+        game.font1.draw(game.batch, "Heating: " + ParametersFields.currentTemperature + "/"
+                + ParametersFields.maxTemperature, 100, 350);
+
+        if (localeCounter >= 60) {
+            ParametersFields.setCurrentTemperature(ParametersFields.refrigeration);
+            localeCounter = 0;
+        } else {
+            localeCounter++;
+        }
+
+        if (ParametersFields.currentTemperature >= ParametersFields.maxTemperature) {
+            ParametersFields.localeCounterDebuff = 0;
+            deBuffBar.setVisible(true);
+            panzer.setDisabled(true);
+            panzer.setTouchable(Touchable.disabled);
+        }
+        if (panzer.isDisabled()) {
+            if (ParametersFields.localeCounterDebuff >= 600) {
+                deBuffBar.setVisible(false);
+                panzer.setDisabled(false);
+                panzer.setTouchable(Touchable.enabled);
+                ParametersFields.localeCounterDebuff = 0;
+            } else {
+                deBuffBar.setValue(ParametersFields.localeCounterDebuff);
+                ParametersFields.localeCounterDebuff++;
+            }
+        }
+            //deBuffBar.setVisible(false);
+            //panzer.setDisabled(false);
+            //panzer.setTouchable(Touchable.enabled);
 
         //координаты для врагов 1000, -150
         game.batch.draw(hashMap.get(counterForEnemies).getTexture(), 1000, -150);
@@ -262,30 +304,36 @@ public class GameScreen implements Screen {
             screen.render(delta);
         }
     }
+
+    //// (ParametersFields.currentTemperature < ParametersFields.maxTemperature)
     protected ClickListener clickListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            result = RandomNumber();
-            freeze = coinFlip();
-            ConfigurationFields.cannonExplosion.play(ConfigurationFields.soundSliderValue);
-            if ((result < ParametersFields.poisonChance) && (!freeze)) {
-                bullet = new PoisonBullet(ParametersFields.texture3, ParametersFields.damage,
-                        ParametersFields.criticalDamage, ParametersFields.criticalChance,
-                        ParametersFields.poisonChance);
-                bulletStage.addActor(bullet);
-                listOfBullets.add(bullet);
+            if (panzer.isDisabled()) {
 
-            } else if ((result < ParametersFields.freezeChance) && (freeze)) {
-                bullet = new FreezeBullet(ParametersFields.texture2, ParametersFields.damage,
-                        ParametersFields.criticalDamage, ParametersFields.criticalChance,
-                        ParametersFields.freezeChance);
-                bulletStage.addActor(bullet);
-                listOfBullets.add(bullet);
             } else {
-                bullet = new Bullet(ParametersFields.texture1, ParametersFields.damage,
-                        ParametersFields.criticalDamage, ParametersFields.criticalChance);
-                bulletStage.addActor(bullet);
-                listOfBullets.add(bullet);
+                result = RandomNumber();
+                freeze = coinFlip();
+                ConfigurationFields.cannonExplosion.play(ConfigurationFields.soundSliderValue);
+                if ((result < ParametersFields.poisonChance) && (!freeze)) {
+                    bullet = new PoisonBullet(ParametersFields.texture3, ParametersFields.damage,
+                            ParametersFields.criticalDamage, ParametersFields.criticalChance,
+                            ParametersFields.poisonChance);
+                    bulletStage.addActor(bullet);
+                    listOfBullets.add(bullet);
+                } else if ((result < ParametersFields.freezeChance) && (freeze)) {
+                    bullet = new FreezeBullet(ParametersFields.texture2, ParametersFields.damage,
+                            ParametersFields.criticalDamage, ParametersFields.criticalChance,
+                            ParametersFields.freezeChance);
+                    bulletStage.addActor(bullet);
+                    listOfBullets.add(bullet);
+                } else {
+                    bullet = new Bullet(ParametersFields.texture1, ParametersFields.damage,
+                            ParametersFields.criticalDamage, ParametersFields.criticalChance);
+                    bulletStage.addActor(bullet);
+                    listOfBullets.add(bullet);
+                }
+                ParametersFields.currentTemperature += 5;
             }
         }
     };
@@ -343,13 +391,13 @@ public class GameScreen implements Screen {
         if (damage < 0.01f) {
             string = (int)(damage * 1_000_000) + "";
         } else if (damage < 1.0f) {
-            string = (int)(damage * 1000) + "k";
+            string = String.format(Locale.US, "%.1f" + "k",(damage * 1000));
         } else if (damage < 1_000.0f) {
-            string = (int)(damage) + "m";
+            string = String.format(Locale.US, "%.2f" + "m", (damage));
         } else if (damage < 1_000_000.0f) {
-            string = (int) (damage / 1000) + "b";
+            string = String.format(Locale.US, "%.2f" + "b", (damage / 1000));
         } else {
-            string = (int) (damage / 1_000_000) + "t";
+            string = String.format(Locale.US, "%.2f" + "t", (damage / 1_000_000));
         }
         return string;
     }
@@ -435,6 +483,8 @@ public class GameScreen implements Screen {
     }
     private void addFonts() {
         game.font = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font1 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
+        game.font1.getData().setScale(0.7f);
         game.font2 = new BitmapFont(Gdx.files.internal(ParametersFields.critDamageLabel));
         game.font3 = new BitmapFont(Gdx.files.internal(ParametersFields.damageLabel));
         game.font3.getData().setScale(0.5f);

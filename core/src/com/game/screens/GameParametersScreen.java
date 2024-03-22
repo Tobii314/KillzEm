@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -23,6 +24,7 @@ public class GameParametersScreen implements Screen {
     private final Stage overlayStage;
     Image overlayImage;
     Array<Actor> listOfParameters;
+    ImageButton powerButton;
     public GameParametersScreen(KiilzEm game, GameScreen gameScreen, Stage stage) {
         this.game = game;
         this.gameScreen = gameScreen;
@@ -33,69 +35,95 @@ public class GameParametersScreen implements Screen {
         overlayStage.addActor(overlayImage);
         new ParametersButtons(overlayStage, gameScreen);
         listOfParameters = overlayStage.getActors();
+        powerButton = (ImageButton) listOfParameters.get(4);
 
         listOfParameters.get(3).addListener(new ClickListener() {  /// damage
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                ParametersFields.setDamage(0.004001f);
+                ParametersFields.setDamage(ParametersFields.damage);
                 Label label = (Label) listOfParameters.get(1);
                 label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
+                ParametersFields.localCounter++;
+
+                if (ParametersFields.localCounter > 50) {
+                    ParametersFields.isDisabled = false;
+                    powerButton.setDisabled(false);
+                    ParametersFields.localCounter = 0;
+                }
             }
         });
-        listOfParameters.get(6).addListener(new ClickListener() {  ///max temp
+        listOfParameters.get(4).addListener(new ClickListener() { /// power
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (powerButton.isDisabled()) {
+                    } else {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.damage *= 5;
+                        Label label = (Label) listOfParameters.get(1);
+                        label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
+                        ParametersFields.damagePower++;
+                        ParametersFields.isDisabled = true;
+                        powerButton.setDisabled(true);
+                    }
+                }
+            });
+        listOfParameters.get(8).addListener(new ClickListener() {  ///max temp
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
             }
         });
-        listOfParameters.get(9).addListener(new ClickListener() {  /// refrigeration
+        listOfParameters.get(11).addListener(new ClickListener() {  /// refrigeration
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
             }
         });
-        listOfParameters.get(12).addListener(new ClickListener() { /// chance
+        listOfParameters.get(14).addListener(new ClickListener() { /// chance
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if (ParametersFields.criticalChanceLevel < 50) {
                     ParametersFields.setCriticalChance(1);
-                    Label label = (Label) listOfParameters.get(10);
+                    Label label = (Label) listOfParameters.get(12);
                     label.setText("CRIT CHANCE: " + ParametersFields.criticalChance + "%");
                 }
             }
         });
-        listOfParameters.get(15).addListener(new ClickListener() {   /// critdamage
+        listOfParameters.get(17).addListener(new ClickListener() {   /// critdamage
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if (ParametersFields.criticalDamageLevel < 100) {
                     ParametersFields.setCriticalDamage(0.025);
-                    Label label = (Label) listOfParameters.get(13);
-                    label.setText(String.format(Locale.US,"CRIT DAMAGE: %.1f%%", (ParametersFields.criticalDamage * 100)));
+                    Label label = (Label) listOfParameters.get(15);
+                    label.setText(String.format(Locale.US,"CRIT DAMAGE: %.1f%%",
+                            (ParametersFields.criticalDamage * 100)));
                 }
             }
         });
-        listOfParameters.get(18).addListener(new ClickListener() { ///  poison
+        listOfParameters.get(20).addListener(new ClickListener() { ///  poison
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if (ParametersFields.poisonChanceLevel < 50) {
                     ParametersFields.setPoisonChance(1);
-                    Label label = (Label) listOfParameters.get(16);
-                    label.setText(String.format(Locale.US,"POISON CHANCE: %.1f%%", (ParametersFields.poisonChance / 2)));
+                    Label label = (Label) listOfParameters.get(18);
+                    label.setText(String.format(Locale.US,"POISON CHANCE: %.1f%%",
+                            (ParametersFields.poisonChance / 2)));
                 }
             }
         });
-        listOfParameters.get(21).addListener(new ClickListener() { /// freeze
+        listOfParameters.get(23).addListener(new ClickListener() { /// freeze
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
                 if (ParametersFields.freezeChanceLevel < 50) {
                     ParametersFields.setFreezeChance(1);
-                    Label label = (Label) listOfParameters.get(19);
-                    label.setText(String.format(Locale.US,"FREEZE CHANCE: %.1f%%", (ParametersFields.freezeChance / 2)));
+                    Label label = (Label) listOfParameters.get(21);
+                    label.setText(String.format(Locale.US,"FREEZE CHANCE: %.1f%%",
+                            (ParametersFields.freezeChance / 2)));
                 }
             }
         });

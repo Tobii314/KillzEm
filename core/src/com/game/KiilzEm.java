@@ -8,13 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.game.screens.MainMenuScreen;
 import java.util.ArrayList;
 
-import static com.game.ConfigurationFields.id;
-import static com.game.ConfigurationFields.soundClick;
-
 public class KiilzEm extends Game {
 	public static ArrayList<Boolean> listOfDead = new ArrayList<Boolean>();
 	public SpriteBatch batch;
 	public BitmapFont font;
+	public BitmapFont font1;
 	public BitmapFont font2;
 	public BitmapFont font3;
 	public BitmapFont font4;
@@ -22,8 +20,6 @@ public class KiilzEm extends Game {
 	public BitmapFont font6;
 	public BitmapFont font7;
 	public BitmapFont font8;
-
-
 	public Music music;
 	@Override
 	public void create () {
@@ -55,6 +51,7 @@ public class KiilzEm extends Game {
 	}
 	private void addFonts() {
 		font = new BitmapFont();
+		font1 = new BitmapFont();
 		font2 = new BitmapFont();
 		font3 = new BitmapFont();
 		font4 = new BitmapFont();

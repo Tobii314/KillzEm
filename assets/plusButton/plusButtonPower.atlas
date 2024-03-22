@@ -1,0 +1,27 @@
+
+plusButtonPower.png
+size: 256, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+ButtonDamage
+  rotate: false
+  xy: 1, 68
+  size: 65, 65
+  orig: 65, 65
+  offset: 0, 0
+  index: -1
+ButtonDamageClicked
+  rotate: false
+  xy: 1, 1
+  size: 65, 65
+  orig: 65, 65
+  offset: 0, 0
+  index: -1
+ButtonDamageDisabled
+  rotate: false
+  xy: 68, 68
+  size: 65, 65
+  orig: 65, 65
+  offset: 0, 0
+  index: -1
