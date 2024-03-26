@@ -20,6 +20,8 @@ public class KiilzEm extends Game {
 	public BitmapFont font6;
 	public BitmapFont font7;
 	public BitmapFont font8;
+	public BitmapFont fontPause1;
+	public BitmapFont fontPause2;
 	public Music music;
 	@Override
 	public void create () {
@@ -59,6 +61,8 @@ public class KiilzEm extends Game {
 		font6 = new BitmapFont();
 		font7 = new BitmapFont();
 		font8 = new BitmapFont();
+		fontPause1 = new BitmapFont();
+		fontPause2 = new BitmapFont();
 	}
 	private void disposeFonts() {
 		font.dispose();

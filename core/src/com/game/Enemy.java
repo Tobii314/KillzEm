@@ -3,19 +3,20 @@ package com.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import static com.game.screens.GameScreen.counterForEnemies;
-import static com.game.screens.GameScreen.hpEnemies;
+import static com.game.screens.GameScreen.*;
 
 public class Enemy extends Actor {
     private final Texture texture;
+    private float earning;
     private float hitPoints;
     private final float shield;
     private final float regeneration;
     private final double poisonResistance;
     private final double freezeResistance;
 
-    public Enemy(Texture texture, float hitPoints, float shield, float regeneration, double poisonResistance, double freezeResistance) {
+    public Enemy(Texture texture, float earning, float hitPoints, float shield, float regeneration, double poisonResistance, double freezeResistance) {
         this.texture = texture;
+        this.earning = earning;
         this.hitPoints = hitPoints;
         this.shield = shield;
         this.regeneration = regeneration;
@@ -28,6 +29,9 @@ public class Enemy extends Actor {
     public float getHitPoints() {
         return this.hitPoints;
     }
+    public float getEarning() {
+        return this.earning;
+    }
     public float setHitPoints(float damage) {
         float currentHitPoints;
         currentHitPoints = this.hitPoints;
@@ -35,6 +39,7 @@ public class Enemy extends Actor {
         this.hitPoints = currentHitPoints;
         if (this.hitPoints <= 0) {
             KiilzEm.listOfDead.set(counterForEnemies-1, true);
+            ParametersFields.setMoney(earningEnemies.get(counterForEnemies));
             this.hitPoints = hpEnemies.get(counterForEnemies);
         }
         return this.hitPoints;
@@ -69,6 +74,7 @@ public class Enemy extends Actor {
 
     public static class EnemyBuilder {
         private Texture texture;
+        private float earning;
         private float hitPoints;
         private float shield;
         private float regeneration;
@@ -76,6 +82,10 @@ public class Enemy extends Actor {
         private double freezeResistance;
         public EnemyBuilder texture(Texture texture) {
             this.texture = texture;
+            return this;
+        }
+        public EnemyBuilder earning(float earning) {
+            this.earning = earning;
             return this;
         }
         public EnemyBuilder hitPoints(float hitPoints) {
@@ -100,8 +110,8 @@ public class Enemy extends Actor {
             return this;
         }
         public Enemy build() {
-            return new Enemy(texture, hitPoints, shield, regeneration, poisonResistance, freezeResistance);
+            return new Enemy(texture, earning, hitPoints, shield,
+                    regeneration, poisonResistance, freezeResistance);
         }
-
     }
 }
