@@ -41,6 +41,7 @@ public class Enemy extends Actor {
             KiilzEm.listOfDead.set(counterForEnemies-1, true);
             ParametersFields.setMoney(earningEnemies.get(counterForEnemies));
             this.hitPoints = hpEnemies.get(counterForEnemies);
+            isDead = true;
         }
         return this.hitPoints;
     }

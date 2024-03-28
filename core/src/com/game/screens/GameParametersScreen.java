@@ -40,33 +40,42 @@ public class GameParametersScreen implements Screen {
         listOfParameters.get(3).addListener(new ClickListener() {  /// damage
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                ParametersFields.setDamage(ParametersFields.damage);
-                Label label = (Label) listOfParameters.get(1);
-                label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
-                ParametersFields.localCounter++;
-                Label label2 = (Label) listOfParameters.get(2);
-                label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.damagePrice));
+                if (ParametersFields.money >= ParametersFields.damagePrice) {
+                    ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                    ParametersFields.setMinusMoney(ParametersFields.damagePrice);
+                    ParametersFields.setDamage(ParametersFields.damage);
+                    Label label = (Label) listOfParameters.get(1);
+                    label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
+                    ParametersFields.localCounter++;
+                    Label label2 = (Label) listOfParameters.get(2);
+                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.damagePrice));
 
-                if (ParametersFields.localCounter > 50) {
-                    ParametersFields.isDisabled = false;
-                    powerButton.setDisabled(false);
-                    ParametersFields.localCounter = 0;
+                    if (ParametersFields.damagePower <= 6) {
+                        if (ParametersFields.localCounter > 50) {
+                            ParametersFields.isDisabled = false;
+                            powerButton.setDisabled(false);
+                            ParametersFields.localCounter = 0;
+                        }
+                    }
                 }
             }
         });
         listOfParameters.get(4).addListener(new ClickListener() { /// power
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (powerButton.isDisabled()) {
+                    if ((powerButton.isDisabled()) || (ParametersFields.damagePower > 6)) {
                     } else {
-                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                        ParametersFields.damage *= 5;
-                        Label label = (Label) listOfParameters.get(1);
-                        label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
-                        ParametersFields.damagePower++;
-                        ParametersFields.isDisabled = true;
-                        powerButton.setDisabled(true);
+                        if (ParametersFields.money >= ParametersFields.damagePowerPrice) {
+                            ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                            ParametersFields.setMinusMoney(ParametersFields.damagePowerPrice);
+                            ParametersFields.damage *= 3.5f;
+                            Label label = (Label) listOfParameters.get(1);
+                            label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
+                            ParametersFields.damagePower++;
+                            ParametersFields.isDisabled = true;
+                            powerButton.setDisabled(true);
+                        }
+
                     }
                 }
             });
@@ -75,12 +84,15 @@ public class GameParametersScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (ParametersFields.maxTemperatureLevel >= 47) {
                 } else {
-                    ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                    ParametersFields.setMaxTemperature(5);
-                    Label label = (Label) listOfParameters.get(6);
-                    label.setText("MAX TEMP: " + ParametersFields.maxTemperature);
-                    Label label2 = (Label) listOfParameters.get(7);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.maxTemperaturePrice));
+                    if (ParametersFields.money >= ParametersFields.maxTemperaturePrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.maxTemperaturePrice);
+                        ParametersFields.setMaxTemperature(5);
+                        Label label = (Label) listOfParameters.get(6);
+                        label.setText("MAX TEMP: " + ParametersFields.maxTemperature);
+                        Label label2 = (Label) listOfParameters.get(7);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.maxTemperaturePrice));
+                    }
                 }
             }
         });
@@ -88,69 +100,89 @@ public class GameParametersScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (ParametersFields.refrigerationLevel >= 9) {
-                    return;
                 } else {
-                    ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                    ParametersFields.setRefrigeration(1);
-                    Label label = (Label) listOfParameters.get(9);
-                    label.setText("REFRIGERATION: " + ParametersFields.refrigeration);
-                    Label label2 = (Label) listOfParameters.get(10);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.refrigerationPrice));
+                    if (ParametersFields.money >= ParametersFields.refrigerationPrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.refrigerationPrice);
+                        ParametersFields.setRefrigeration(1);
+                        Label label = (Label) listOfParameters.get(9);
+                        label.setText("REFRIGERATION: " + ParametersFields.refrigeration);
+                        Label label2 = (Label) listOfParameters.get(10);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.refrigerationPrice));
+                    }
                 }
             }
         });
         listOfParameters.get(14).addListener(new ClickListener() { /// chance
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                if (ParametersFields.criticalChanceLevel < 101) {
-                    ParametersFields.setCriticalChance(0.5);
-                    Label label = (Label) listOfParameters.get(12);
-                    label.setText("CRIT CHANCE: " + ParametersFields.criticalChance + "%");
-                    Label label2 = (Label) listOfParameters.get(13);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.criticalChancePrice));
+                if (ParametersFields.criticalChanceLevel >= 101) {
+                } else {
+                    if (ParametersFields.money >= ParametersFields.criticalChancePrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.criticalChancePrice);
+                        ParametersFields.setCriticalChance(0.5);
+                        Label label = (Label) listOfParameters.get(12);
+                        label.setText("CRIT CHANCE: " + ParametersFields.criticalChance + "%");
+                        Label label2 = (Label) listOfParameters.get(13);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.criticalChancePrice));
+                    }
                 }
             }
         });
         listOfParameters.get(17).addListener(new ClickListener() {   /// critdamage
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                if (ParametersFields.criticalDamageLevel < 101) {
-                    ParametersFields.setCriticalDamage(0.025);
-                    Label label = (Label) listOfParameters.get(15);
-                    label.setText(String.format(Locale.US,"CRIT DAMAGE: %.1f%%",
-                            (ParametersFields.criticalDamage * 100)));
-                    Label label2 = (Label) listOfParameters.get(16);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.criticalDamagePrice));
+                if (ParametersFields.criticalDamageLevel >= 101) {
+                } else {
+                    if (ParametersFields.money >= ParametersFields.criticalDamagePrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.criticalDamagePrice);
+                        ParametersFields.setCriticalDamage(0.025);
+                        Label label = (Label) listOfParameters.get(15);
+                        label.setText(String.format(Locale.US,"CRIT DAMAGE: %.1f%%",
+                                (ParametersFields.criticalDamage * 100)));
+                        Label label2 = (Label) listOfParameters.get(16);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.criticalDamagePrice));
+                    }
                 }
+
+
             }
         });
         listOfParameters.get(20).addListener(new ClickListener() { ///  poison
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                if (ParametersFields.poisonChanceLevel < 51) {
-                    ParametersFields.setPoisonChance(1);
-                    Label label = (Label) listOfParameters.get(18);
-                    label.setText(String.format(Locale.US,"POISON CHANCE: %.1f%%",
-                            (ParametersFields.poisonChance / 2)));
-                    Label label2 = (Label) listOfParameters.get(19);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.poisonChancePrice));
+                if (ParametersFields.poisonChanceLevel >= 51) {
+                } else {
+                    if (ParametersFields.money >= ParametersFields.poisonChancePrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.poisonChancePrice);
+                        ParametersFields.setPoisonChance(1);
+                        Label label = (Label) listOfParameters.get(18);
+                        label.setText(String.format(Locale.US,"POISON CHANCE: %.1f%%",
+                                (ParametersFields.poisonChance / 2)));
+                        Label label2 = (Label) listOfParameters.get(19);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.poisonChancePrice));
+                    }
                 }
             }
         });
         listOfParameters.get(23).addListener(new ClickListener() { /// freeze
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                if (ParametersFields.freezeChanceLevel < 51) {
-                    ParametersFields.setFreezeChance(1);
-                    Label label = (Label) listOfParameters.get(21);
-                    label.setText(String.format(Locale.US,"FREEZE CHANCE: %.1f%%",
-                            (ParametersFields.freezeChance / 2)));
-                    Label label2 = (Label) listOfParameters.get(22);
-                    label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.freezeChancePrice));
+                if (ParametersFields.freezeChanceLevel >= 51) {
+                } else {
+                    if (ParametersFields.money >= ParametersFields.freezeChancePrice) {
+                        ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                        ParametersFields.setMinusMoney(ParametersFields.freezeChancePrice);
+                        ParametersFields.setFreezeChance(1);
+                        Label label = (Label) listOfParameters.get(21);
+                        label.setText(String.format(Locale.US,"FREEZE CHANCE: %.1f%%",
+                                (ParametersFields.freezeChance / 2)));
+                        Label label2 = (Label) listOfParameters.get(22);
+                        label2.setText("Cost: " + gameScreen.parseToString(ParametersFields.freezeChancePrice));
+                    }
                 }
             }
         });

@@ -25,6 +25,7 @@ import com.game.buttons.GameButtons;
 import java.util.*;
 
 public class GameScreen implements Screen {
+    public static boolean isDead;
     ProgressBar hitPointsBar;
     ProgressBar deBuffBar;
     public static Integer counterForEnemies = 1;
@@ -65,6 +66,9 @@ public class GameScreen implements Screen {
     private ImageButton panzer;
     private int localeCounter = 0;
     private boolean paused;
+    private int counterA = 0;
+    private int coinX = 1350;
+    private int coinY = 400;
 
 
     public GameScreen(KiilzEm game) {
@@ -194,7 +198,7 @@ public class GameScreen implements Screen {
             game.batch.begin();
             game.batch.draw(image, 0, 0);
             game.batch.draw(coinImage, 875, 950);
-            game.font3.draw(game.batch, " " + parseToString(ParametersFields.money), 950, 987.5f);
+            game.font3.draw(game.batch, " " + parseToString(ParametersFields.money), 925, 987.5f);
 
             game.font1.draw(game.batch, "Heating: " + ParametersFields.currentTemperature + "/"
                     + ParametersFields.maxTemperature, 100, 350);
@@ -204,6 +208,18 @@ public class GameScreen implements Screen {
                 localeCounter = 0;
             } else {
                 localeCounter++;
+            }
+            if (isDead) {
+                game.batch.draw(coinImage, coinX, coinY);
+                if (counterA > 30) {
+                    isDead = false;
+                    counterA = 0;
+                    coinX = 1350;
+                    coinY = 400;
+                }
+                coinX -= 2;
+                coinY += 2;
+                counterA++;
             }
 
             if (ParametersFields.currentTemperature >= ParametersFields.maxTemperature) {
@@ -449,30 +465,30 @@ public class GameScreen implements Screen {
         map.put(4, addEnemys.firstTierEnemy(EnemiesParameters.texture4, EnemiesParameters.earning4, EnemiesParameters.hp4));
         map.put(5, addEnemys.firstTierEnemy(EnemiesParameters.texture5, EnemiesParameters.earning5, EnemiesParameters.hp5));
         //// 2 тир
-        map.put(6, addEnemys.secondTierEnemy(EnemiesParameters.texture6, EnemiesParameters.earning6, EnemiesParameters.hp6, 1.0f));
-        map.put(7, addEnemys.secondTierEnemy(EnemiesParameters.texture7, EnemiesParameters.earning7, EnemiesParameters.hp7, 2.0f));
-        map.put(8, addEnemys.secondTierEnemy(EnemiesParameters.texture8, EnemiesParameters.earning8, EnemiesParameters.hp8, 3.5f));
-        map.put(9, addEnemys.secondTierEnemy(EnemiesParameters.texture9, EnemiesParameters.earning9, EnemiesParameters.hp9, 5.0f));
-        map.put(10, addEnemys.secondTierEnemy(EnemiesParameters.texture10, EnemiesParameters.earning10, EnemiesParameters.hp10, 7.5f));
+        map.put(6, addEnemys.secondTierEnemy(EnemiesParameters.texture6, EnemiesParameters.earning6, EnemiesParameters.hp6, 1.5f));
+        map.put(7, addEnemys.secondTierEnemy(EnemiesParameters.texture7, EnemiesParameters.earning7, EnemiesParameters.hp7, 3.0f));
+        map.put(8, addEnemys.secondTierEnemy(EnemiesParameters.texture8, EnemiesParameters.earning8, EnemiesParameters.hp8, 5.25f));
+        map.put(9, addEnemys.secondTierEnemy(EnemiesParameters.texture9, EnemiesParameters.earning9, EnemiesParameters.hp9, 7.5f));
+        map.put(10, addEnemys.secondTierEnemy(EnemiesParameters.texture10, EnemiesParameters.earning10, EnemiesParameters.hp10, 11.25f));
         //// 3 тир
-        map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, EnemiesParameters.earning11, EnemiesParameters.hp11, 9.0f, 0.0053f)); //reg 4%  //0.0067f
-        map.put(12, addEnemys.thirdTierEnemy(EnemiesParameters.texture12, EnemiesParameters.earning12, EnemiesParameters.hp12, 11.0f, 0.0167f)); // reg 4%
-        map.put(13, addEnemys.thirdTierEnemy(EnemiesParameters.texture13, EnemiesParameters.earning13, EnemiesParameters.hp13, 13.0f, 0.67f)); // reg 5%
-        map.put(14, addEnemys.thirdTierEnemy(EnemiesParameters.texture14, EnemiesParameters.earning14, EnemiesParameters.hp14, 15.0f, 2.917f)); // reg 7%
-        map.put(15, addEnemys.thirdTierEnemy(EnemiesParameters.texture15, EnemiesParameters.earning15, EnemiesParameters.hp15, 17.5f, 10f)); // reg 8%
+        map.put(11, addEnemys.thirdTierEnemy(EnemiesParameters.texture11, EnemiesParameters.earning11, EnemiesParameters.hp11, 13.5f, 0.01f)); //reg 4%  //0.0067f
+        map.put(12, addEnemys.thirdTierEnemy(EnemiesParameters.texture12, EnemiesParameters.earning12, EnemiesParameters.hp12, 16.5f, 0.033f)); // reg 4%
+        map.put(13, addEnemys.thirdTierEnemy(EnemiesParameters.texture13, EnemiesParameters.earning13, EnemiesParameters.hp13, 19.0f, 0.1125f)); // reg 5%
+        map.put(14, addEnemys.thirdTierEnemy(EnemiesParameters.texture14, EnemiesParameters.earning14, EnemiesParameters.hp14, 22.5f, 0.47f)); // reg 7%
+        map.put(15, addEnemys.thirdTierEnemy(EnemiesParameters.texture15, EnemiesParameters.earning15, EnemiesParameters.hp15, 26.0f, 1.6f)); // reg 8%
         //// 4 тир
-        map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, EnemiesParameters.earning16, EnemiesParameters.hp16, 22.5f, 100f, 10d)); // reg 10%
-        map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, EnemiesParameters.earning17, EnemiesParameters.hp17, 24.0f, 291.6f, 15d)); // reg 10%
-        map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, EnemiesParameters.earning18, EnemiesParameters.hp18, 26.0f, 937.5f, 20d)); // reg 12.5%
-        map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, EnemiesParameters.earning19, EnemiesParameters.hp19, 28.0f, 2_500f, 25d)); // reg 12.5%
-        map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, EnemiesParameters.earning20, EnemiesParameters.hp20, 30.0f, 6_375f, 30d)); // reg 15%
+        map.put(16, addEnemys.fourthTierEnemy(EnemiesParameters.texture16, EnemiesParameters.earning16, EnemiesParameters.hp16, 33.75f, 16.67f, 10d)); // reg 10%
+        map.put(17, addEnemys.fourthTierEnemy(EnemiesParameters.texture17, EnemiesParameters.earning17, EnemiesParameters.hp17, 36.0f, 41.5f, 15d)); // reg 10%
+        map.put(18, addEnemys.fourthTierEnemy(EnemiesParameters.texture18, EnemiesParameters.earning18, EnemiesParameters.hp18, 39.0f, 156.0f, 20d)); // reg 12.5%
+        map.put(19, addEnemys.fourthTierEnemy(EnemiesParameters.texture19, EnemiesParameters.earning19, EnemiesParameters.hp19, 41.5f, 415f, 25d)); // reg 12.5%
+        map.put(20, addEnemys.fourthTierEnemy(EnemiesParameters.texture20, EnemiesParameters.earning20, EnemiesParameters.hp20, 45.0f, 1_500f, 30d)); // reg 15%
         //// 5 тир
-        map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, EnemiesParameters.earning21, EnemiesParameters.hp21, 35.0f, 59_500f, 35d, 10d)); // reg 17.5%
-        map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, EnemiesParameters.earning22, EnemiesParameters.hp22, 37.0f, 131_250f, 37d, 17.5d)); // reg 17.5%
-        map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, EnemiesParameters.earning23, EnemiesParameters.hp23, 40.0f, 300_000f, 40d, 25d)); // reg 20%
-        map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, EnemiesParameters.earning24, EnemiesParameters.hp24, 42.5f, 600_000f, 43d, 30d)); // reg 20%
-        map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, EnemiesParameters.earning25, EnemiesParameters.hp25, 45.0f, 1_467_000f, 45d, 40d)); // reg 22%
-        map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, EnemiesParameters.earning26, EnemiesParameters.hp26, 50.0f, 4_162_500f, 50d, 50d)); // reg 25%
+        map.put(21, addEnemys.fifthTierEnemy(EnemiesParameters.texture21, EnemiesParameters.earning21, EnemiesParameters.hp21, 52.5f, 13_125f, 35d, 10d)); // reg 17.5%
+        map.put(22, addEnemys.fifthTierEnemy(EnemiesParameters.texture22, EnemiesParameters.earning22, EnemiesParameters.hp22, 55.75f, 40_000f, 37d, 17.5d)); // reg 17.5%
+        map.put(23, addEnemys.fifthTierEnemy(EnemiesParameters.texture23, EnemiesParameters.earning23, EnemiesParameters.hp23, 60.0f, 167_000f, 40d, 25d)); // reg 20%
+        map.put(24, addEnemys.fifthTierEnemy(EnemiesParameters.texture24, EnemiesParameters.earning24, EnemiesParameters.hp24, 63.5f, 500_000f, 43d, 30d)); // reg 20%
+        map.put(25, addEnemys.fifthTierEnemy(EnemiesParameters.texture25, EnemiesParameters.earning25, EnemiesParameters.hp25, 67.0f, 1_650_000f, 45d, 40d)); // reg 22%
+        map.put(26, addEnemys.fifthTierEnemy(EnemiesParameters.texture26, EnemiesParameters.earning26, EnemiesParameters.hp26, 70.0f, 4_162_500f, 50d, 50d)); // reg 25%
         return map;
     }
     public Map<Integer, Float> addEarnings() {

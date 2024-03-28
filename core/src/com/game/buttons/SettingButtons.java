@@ -59,7 +59,7 @@ public class SettingButtons {
         if (ConfigurationFields.counterSound > 0) {
             soundSlider.setValue(ConfigurationFields.soundSliderValue);
         } else {
-            soundSlider.setValue(1f);
+            soundSlider.setValue(ConfigurationFields.soundSliderValue);
         }
         table.addActor(soundSlider);
         finalSoundSlider = soundSlider;

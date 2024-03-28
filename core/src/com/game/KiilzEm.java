@@ -28,7 +28,7 @@ public class KiilzEm extends Game {
 		batch = new SpriteBatch();
 		addFonts();
 		this.setScreen(new MainMenuScreen(this));
-		music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+		music = Gdx.audio.newMusic(Gdx.files.internal("music2.mp3"));
 		ConfigurationFields.soundClick = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
 		ConfigurationFields.cannonExplosion = Gdx.audio.newSound(Gdx.files.internal("ExplosionCannon.mp3"));
 		ConfigurationFields.bulletExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
