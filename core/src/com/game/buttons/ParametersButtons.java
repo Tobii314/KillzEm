@@ -21,10 +21,10 @@ public class ParametersButtons {
     public ParametersButtons(Stage stage, GameScreen screen) {
         this.stage = stage;
         this.screen = screen;
-        skin = new Skin(Gdx.files.internal("ParametersFields2/BigFields.json"));
-        miniSkin = new Skin(Gdx.files.internal("ParametersFields/ParametersField.json"));
-        plusButton = new Skin(Gdx.files.internal("ParametersFields2/ParametersFields.json"));
-        powerButton = new Skin(Gdx.files.internal("PlusButton/plusButtonPower.json"));
+        skin = new Skin(Gdx.files.internal("font/ParametersFields2/BigFields.json"));
+        miniSkin = new Skin(Gdx.files.internal("font/ParametersFields/ParametersField.json"));
+        plusButton = new Skin(Gdx.files.internal("font/ParametersFields2/ParametersFields.json"));
+        powerButton = new Skin(Gdx.files.internal("graphics/plusButton/plusButtonPower.json"));
         addButtons();
     }
     private void addButtons() {
@@ -44,7 +44,7 @@ public class ParametersButtons {
         plusButtonPower.setDisabled(ParametersFields.isDisabled);
         stage.addActor(plusButtonPower);
 
-        Label powerInfo = new Label("Cost: " + screen.parseToString(ParametersFields.damagePrice), miniSkin);
+        Label powerInfo = new Label("Cost: " + screen.parseToString(GameScreen.powerCosts.get(ParametersFields.damagePower)), miniSkin);
         powerInfo.setPosition(650, 825);
         stage.addActor(powerInfo);
 

@@ -16,11 +16,11 @@ public class GameButtons {
 
 
     public GameButtons(GameScreen stage) {
-        skinPanzer = new Skin(Gdx.files.internal("skin2/skinPanzer.json"));
-        skinMenuButton = new Skin(Gdx.files.internal("skin2/menuButton.json"));
-        rightArrow = new Skin(Gdx.files.internal("ArrowRight/skinArrowRight.json"));
-        leftArrow = new Skin(Gdx.files.internal("ArrowLeft/skinArrow.json"));
-        skinParameters = new Skin(Gdx.files.internal("skin1/button.json"));
+        skinPanzer = new Skin(Gdx.files.internal("graphics/skin/skin2/skinPanzer.json"));
+        skinMenuButton = new Skin(Gdx.files.internal("graphics/skin/skin2/menuButton.json"));
+        rightArrow = new Skin(Gdx.files.internal("graphics/arrow/ArrowRight/skinArrowRight.json"));
+        leftArrow = new Skin(Gdx.files.internal("graphics/arrow/ArrowLeft/skinArrow.json"));
+        skinParameters = new Skin(Gdx.files.internal("graphics/skin/skin1/button.json"));
         this.stage = stage;
         addButtons();
     }

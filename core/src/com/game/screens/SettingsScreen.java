@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.game.KiilzEm;
+import com.game.KillzEm;
 import com.game.ConfigurationFields;
 import com.game.buttons.SettingButtons;
 
@@ -24,12 +24,12 @@ public class SettingsScreen implements Screen {
     SettingButtons settingButtons;
     private final Stage overlayStage;
     Image overlayImage;
-    KiilzEm game;
-    public SettingsScreen(KiilzEm game, MainMenuScreen mainMenuScreen) {
+    KillzEm game;
+    public SettingsScreen(KillzEm game, MainMenuScreen mainMenuScreen) {
         this.game = game;
         this.mainMenuScreen = mainMenuScreen;
         overlayStage = new Stage(new ScreenViewport());
-        Texture overlayTexture = new Texture("SettingsScreen.png");
+        Texture overlayTexture = new Texture("picture/SettingsScreen.png");
         overlayImage = new Image(overlayTexture);
         overlayImage.setPosition(0,Gdx.graphics.getHeight());
         overlayImage.setSize(1920, 1080);

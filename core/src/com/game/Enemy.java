@@ -2,6 +2,7 @@ package com.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.game.screens.GameScreen;
 
 import static com.game.screens.GameScreen.*;
 
@@ -38,10 +39,14 @@ public class Enemy extends Actor {
         currentHitPoints -= damage;
         this.hitPoints = currentHitPoints;
         if (this.hitPoints <= 0) {
-            KiilzEm.listOfDead.set(counterForEnemies-1, true);
+            if (!(KillzEm.listOfDead.get(counterForEnemies-1))) {
+                isGlowing = true;
+            }
+            KillzEm.listOfDead.set(counterForEnemies-1, true);
             ParametersFields.setMoney(earningEnemies.get(counterForEnemies));
             this.hitPoints = hpEnemies.get(counterForEnemies);
             isDead = true;
+
         }
         return this.hitPoints;
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public class ParametersFields {
-    public static float money = 0.000700f;
+    public static float money = 0.0799000f;
     public static float damage = 0.000001f; // 1
     public static float damagePrice = 0.000015f;
     public static int damageLevel = 1;
@@ -35,11 +35,11 @@ public class ParametersFields {
     public static int currentTemperature = 10;
     public static float maxTemperaturePrice = 0.00045f;
     public static int maxTemperatureLevel = 1;
-    public static Texture texture1 = new Texture(Gdx.files.internal("Bullets/cannonBall.png"));
-    public static Texture texture2 = new Texture(Gdx.files.internal("Bullets/cannonFreezeBall.png"));
-    public static Texture texture3 = new Texture(Gdx.files.internal("Bullets/cannonPoisonBall.png"));
-    public static String damageLabel = "DamageString/damageString.fnt";
-    public static String critDamageLabel = "DamageString/critDamage.fnt";
+    public static Texture texture1 = new Texture(Gdx.files.internal("picture/Bullets/cannonBall.png"));
+    public static Texture texture2 = new Texture(Gdx.files.internal("picture/Bullets/cannonFreezeBall.png"));
+    public static Texture texture3 = new Texture(Gdx.files.internal("picture/Bullets/cannonPoisonBall.png"));
+    public static String damageLabel = "font/DamageString/damageString.fnt";
+    public static String critDamageLabel = "font/DamageString/critDamage.fnt";
     public static int localCounter = 0;
     public static boolean isDisabled = true;
     public static int localeCounterDebuff = 0;

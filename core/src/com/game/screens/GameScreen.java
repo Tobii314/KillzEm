@@ -43,11 +43,13 @@ public class GameScreen implements Screen {
     Texture coinImage;
     Texture imagePause;
     Texture explosionImage;
-    KiilzEm game;
+    Texture glowing;
+    KillzEm game;
     int deltaX = 25;
     public Map<Integer, Enemy> hashMap = new HashMap<>();
     public static Map<Integer, Float> hpEnemies = new HashMap<>();
     public static Map<Integer, Float> earningEnemies = new HashMap<>();
+    public static Map<Integer, Float> powerCosts = new HashMap<>();
     private final Skin skinProgressBar;
     private final Skin skinDeBuffBar;
     AddEnemys addEnemys;
@@ -69,27 +71,34 @@ public class GameScreen implements Screen {
     private int counterA = 0;
     private int coinX = 1350;
     private int coinY = 400;
+    public static boolean isGlowing = false;
+    private int glowingCounter = 0;
+    private int globalGlowingCounter = 0;
+    private float alphaGlowing = 1f;
 
 
-    public GameScreen(KiilzEm game) {
+    public GameScreen(KillzEm game) {
         this.game = game;
         addEnemys = new AddEnemys();
         hashMap = addMap();
         hpEnemies = addMapHitPoints();
         earningEnemies = addEarnings();
-        skinProgressBar = new Skin(Gdx.files.internal("ProgressBar/bar.json"));
-        skinOfNumberDamage = new Skin(Gdx.files.internal("DamageString/damage.json"));
-        skinOfNumberCritDamage = new Skin(Gdx.files.internal("DamageString/critDamage.json"));
-        skinDeBuffBar = new Skin(Gdx.files.internal("ProgressBar/neon-ui.json"));
+        powerCosts = addCosts();
+        skinProgressBar = new Skin(Gdx.files.internal("graphics/progressBar/bar.json"));
+        skinOfNumberDamage = new Skin(Gdx.files.internal("font/DamageString/damage.json"));
+        skinOfNumberCritDamage = new Skin(Gdx.files.internal("font/DamageString/critDamage.json"));
+        skinDeBuffBar = new Skin(Gdx.files.internal("graphics/progressBar/neon-ui.json"));
     }
+
     @Override
     public void show() {
         paused = false;
-        image = new Texture("GameScreen.jpg");
-        coinImage = new Texture("coin.png");
-        imagePause = new Texture("GameScreen.png");
+        image = new Texture("picture/GameScreen.jpg");
+        coinImage = new Texture("picture/coin.png");
+        imagePause = new Texture("picture/GameScreen.png");
         addFonts();
-        explosionImage = new Texture("explosion.png");
+        explosionImage = new Texture("picture/explosion.png");
+        glowing = new Texture("picture/glowingArrow.png");
         InputMultiplexer multiplexer = new InputMultiplexer();
         buttonStage = new Stage(new ScreenViewport());
         bulletStage = new Stage(new ScreenViewport());
@@ -133,11 +142,12 @@ public class GameScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                if ((counterForEnemies == 26) || !(KiilzEm.listOfDead.get(counterForEnemies-1))) {
+                if ((counterForEnemies == 26) || !(KillzEm.listOfDead.get(counterForEnemies-1))) {
                     return;
                 } else {
                     counterForEnemies++;
                     changeProgressBar();
+                    isGlowing = false;
                 }
             }
         });
@@ -196,6 +206,7 @@ public class GameScreen implements Screen {
         } else {
             ScreenUtils.clear(1, 1, 1, 1);
             game.batch.begin();
+            game.batch2.begin();
             game.batch.draw(image, 0, 0);
             game.batch.draw(coinImage, 875, 950);
             game.font3.draw(game.batch, " " + parseToString(ParametersFields.money), 925, 987.5f);
@@ -238,6 +249,28 @@ public class GameScreen implements Screen {
                     deBuffBar.setValue(ParametersFields.localeCounterDebuff);
                     ParametersFields.localeCounterDebuff++;
                 }
+            }
+
+            if (isGlowing) {
+                if (globalGlowingCounter > 3) {
+                    globalGlowingCounter = 0;
+                    isGlowing = false;
+                } else {
+                    game.batch2.setColor(1,1,1,alphaGlowing);
+                    game.batch2.draw(glowing, 1649,696);
+                    if (glowingCounter > 90) {
+                        globalGlowingCounter++;
+                        glowingCounter = 0;
+                        alphaGlowing = 1f;
+                    }
+                    alphaGlowing -= 0.011f;
+                    glowingCounter++;
+                }
+            }
+            if (!isGlowing) {
+                globalGlowingCounter = 0;
+                glowingCounter = 0;
+                alphaGlowing = 1f;
             }
 
             //координаты для врагов 1000, -150
@@ -335,6 +368,7 @@ public class GameScreen implements Screen {
                 }
             }
             game.batch.end();
+            game.batch2.end();
             buttonStage.act();
             buttonStage.draw();
             bulletStage.act();
@@ -372,7 +406,7 @@ public class GameScreen implements Screen {
                     bulletStage.addActor(bullet);
                     listOfBullets.add(bullet);
                 }
-                ParametersFields.currentTemperature += 5;
+                ParametersFields.currentTemperature += 4;
             }
         }
     };
@@ -519,6 +553,18 @@ public class GameScreen implements Screen {
         map.put(24, EnemiesParameters.earning24);
         map.put(25, EnemiesParameters.earning25);
         map.put(26, EnemiesParameters.earning26);
+        return map;
+    }
+    private HashMap<Integer, Float> addCosts() {
+        HashMap<Integer, Float> map = new HashMap<>();
+        map.put(0, 0.07f);
+        map.put(1, 10.0f);
+        map.put(2, 2_200.0f);
+        map.put(3, 115_000.0f);
+        map.put(4, 6_000_000.0f);
+        map.put(5, 150_000_000.0f);
+        map.put(6, 1_000_000_000.0f);
+        map.put(7, 3_500_000_000.0f);
         return map;
     }
 

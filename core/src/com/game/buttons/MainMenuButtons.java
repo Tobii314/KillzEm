@@ -15,7 +15,7 @@ public class MainMenuButtons {
     public MainMenuButtons(MainMenuScreen screen, MainMenuScreen stage) {
         this.screen = screen;
         this.stage = stage;
-        skin = new Skin(Gdx.files.internal("skin1/button.json"));
+        skin = new Skin(Gdx.files.internal("graphics/skin/skin1/button.json"));
         addButtons();
     }
     public void addButtons() {

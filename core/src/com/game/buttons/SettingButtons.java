@@ -17,7 +17,7 @@ public class SettingButtons {
     final String STR_SOUND = "Sound";
     final String STR_REPORT = "Report of bugs";
     public SettingButtons(SettingsScreen settingsScreen) {
-        skin = new Skin(Gdx.files.internal("skin2/skin.json"));
+        skin = new Skin(Gdx.files.internal("graphics/skin/skin2/skin.json"));
         table = new Table();
         table.setFillParent(true);
         this.settingsScreen = settingsScreen;

@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.game.ConfigurationFields;
-import com.game.KiilzEm;
+import com.game.KillzEm;
 import com.game.ParametersFields;
 import com.game.buttons.ParametersButtons;
 
@@ -19,17 +19,17 @@ import java.util.Locale;
 
 
 public class GameParametersScreen implements Screen {
-    KiilzEm game;
+    KillzEm game;
     GameScreen gameScreen;
     private final Stage overlayStage;
     Image overlayImage;
     Array<Actor> listOfParameters;
     ImageButton powerButton;
-    public GameParametersScreen(KiilzEm game, GameScreen gameScreen, Stage stage) {
+    public GameParametersScreen(KillzEm game, GameScreen gameScreen, Stage stage) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.overlayStage = stage;
-        Texture texture = new Texture("menuParameters.png");
+        Texture texture = new Texture("picture/menuParameters.png");
         overlayImage = new Image(texture);
         overlayImage.setPosition(350,240);
         overlayStage.addActor(overlayImage);
@@ -65,15 +65,17 @@ public class GameParametersScreen implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     if ((powerButton.isDisabled()) || (ParametersFields.damagePower > 6)) {
                     } else {
-                        if (ParametersFields.money >= ParametersFields.damagePowerPrice) {
+                        if (ParametersFields.money >= GameScreen.powerCosts.get(ParametersFields.damagePower)) {
                             ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
-                            ParametersFields.setMinusMoney(ParametersFields.damagePowerPrice);
+                            ParametersFields.setMinusMoney((GameScreen.powerCosts.get(ParametersFields.damagePower)));
                             ParametersFields.damage *= 3.5f;
                             Label label = (Label) listOfParameters.get(1);
                             label.setText("DAMAGE: " + gameScreen.parseToString(ParametersFields.damage));
                             ParametersFields.damagePower++;
                             ParametersFields.isDisabled = true;
                             powerButton.setDisabled(true);
+                            Label label2 = (Label) listOfParameters.get(5);
+                            label2.setText("Cost: " + gameScreen.parseToString(GameScreen.powerCosts.get(ParametersFields.damagePower)));
                         }
 
                     }

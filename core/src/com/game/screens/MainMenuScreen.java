@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.game.KiilzEm;
+import com.game.KillzEm;
 import com.game.ConfigurationFields;
 import com.game.buttons.MainMenuButtons;
 
@@ -21,15 +21,15 @@ public class MainMenuScreen implements Screen {
     Array<Actor> listOfButtons = new Array<>();
     public Stage stage;
     Texture image;
-    KiilzEm game;
-    public MainMenuScreen(KiilzEm game) {
+    KillzEm game;
+    public MainMenuScreen(KillzEm game) {
         this.game = game;
         screen = new SettingsScreen(game, this);
     }
     @Override
     public void show() {
-        image = new Texture("MainMenu.png");
-        game.font = new BitmapFont(Gdx.files.internal("text/text.fnt"));
+        image = new Texture("picture/MainMenu.png");
+        game.font = new BitmapFont(Gdx.files.internal("font/text/text.fnt"));    //+++++++
         game.font.getData().setScale(2.0f);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -66,7 +66,7 @@ public class MainMenuScreen implements Screen {
         ScreenUtils.clear(1, 1, 1, 1);
         game.batch.begin();
         game.batch.draw(image, 0, 0);
-        game.font.draw(game.batch, "KiilzEm", Gdx.graphics.getWidth() / 2 - 275, 950);
+        game.font.draw(game.batch, "KillzEm", Gdx.graphics.getWidth() / 2 - 275, 950);
         game.batch.end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

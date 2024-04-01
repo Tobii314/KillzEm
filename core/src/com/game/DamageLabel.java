@@ -1,7 +1,5 @@
 package com.game;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
 public class DamageLabel {
     String number;
     int x;

@@ -10,8 +10,8 @@ public class DesktopLauncher {
 		Graphics.DisplayMode primaryMode = Lwjgl3ApplicationConfiguration.getDisplayMode();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("KiilzEm");
+		config.setTitle("KillzEm");
 		config.setFullscreenMode(primaryMode);
-		new Lwjgl3Application(new KiilzEm(), config);
+		new Lwjgl3Application(new KillzEm(), config);
 	}
 }

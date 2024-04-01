@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.game.screens.MainMenuScreen;
 import java.util.ArrayList;
 
-public class KiilzEm extends Game {
+public class KillzEm extends Game {
 	public static ArrayList<Boolean> listOfDead = new ArrayList<Boolean>();
 	public SpriteBatch batch;
+	public SpriteBatch batch2;
 	public BitmapFont font;
 	public BitmapFont font1;
 	public BitmapFont font2;
@@ -26,12 +27,13 @@ public class KiilzEm extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		batch2 = new SpriteBatch();
 		addFonts();
 		this.setScreen(new MainMenuScreen(this));
-		music = Gdx.audio.newMusic(Gdx.files.internal("music2.mp3"));
-		ConfigurationFields.soundClick = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
-		ConfigurationFields.cannonExplosion = Gdx.audio.newSound(Gdx.files.internal("ExplosionCannon.mp3"));
-		ConfigurationFields.bulletExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
+		music = Gdx.audio.newMusic(Gdx.files.internal("audio/music.mp3"));
+		ConfigurationFields.soundClick = Gdx.audio.newSound(Gdx.files.internal("audio/click.mp3"));
+		ConfigurationFields.cannonExplosion = Gdx.audio.newSound(Gdx.files.internal("audio/ExplosionCannon.mp3"));
+		ConfigurationFields.bulletExplosion = Gdx.audio.newSound(Gdx.files.internal("audio/explosion.mp3"));
 		music.setLooping(true);
 		music.play();
 		setListOfDead();
@@ -43,6 +45,7 @@ public class KiilzEm extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		batch2.dispose();
 		music.dispose();
 		disposeFonts();
 	}
