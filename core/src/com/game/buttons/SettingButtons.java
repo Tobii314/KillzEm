@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.game.ConfigurationFields;
+import com.game.KillzEm;
 import com.game.screens.SettingsScreen;
 
 public class SettingButtons {
@@ -45,22 +46,14 @@ public class SettingButtons {
         Slider musicSlider = new Slider(0, 1, 0.1f, false, skin);
         musicSlider.setSize(300,40);
         musicSlider.setPosition(800, Gdx.graphics.getHeight()+400);
-        if (ConfigurationFields.counterMusic > 0) {
-            musicSlider.setValue(ConfigurationFields.musicSliderValue);
-        } else {
-            musicSlider.setValue(1f);
-        }
+        musicSlider.setValue(ConfigurationFields.musicSliderValue);
         table.addActor(musicSlider);
         finalMusicSlider = musicSlider;
 
         Slider soundSlider = new Slider(0, 1, 0.1f, false, skin);
         soundSlider.setSize(300,40);
         soundSlider.setPosition(800, Gdx.graphics.getHeight()+250);
-        if (ConfigurationFields.counterSound > 0) {
-            soundSlider.setValue(ConfigurationFields.soundSliderValue);
-        } else {
-            soundSlider.setValue(ConfigurationFields.soundSliderValue);
-        }
+        soundSlider.setValue(ConfigurationFields.soundSliderValue);
         table.addActor(soundSlider);
         finalSoundSlider = soundSlider;
 

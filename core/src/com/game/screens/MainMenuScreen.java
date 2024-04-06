@@ -29,7 +29,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         image = new Texture("picture/MainMenu.png");
-        game.font = new BitmapFont(Gdx.files.internal("font/text/text.fnt"));    //+++++++
+        game.font = new BitmapFont(Gdx.files.internal("font/text/text.fnt"));
         game.font.getData().setScale(2.0f);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -57,6 +57,9 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ConfigurationFields.soundClick.play(ConfigurationFields.soundSliderValue);
+                game.saveListOfDead();
+                game.saveConfigurations();
+                game.saveParameter();
                 Gdx.app.exit();
             }
         });

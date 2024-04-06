@@ -59,7 +59,7 @@ public class SettingsScreen implements Screen {
                 musicSliderValue = settingButtons.finalMusicSlider.getValue();
                 ConfigurationFields.soundClick.play(soundSliderValue);
                 game.music.setVolume(musicSliderValue);
-                ConfigurationFields.counterMusic++;
+                //ConfigurationFields.counterMusic++;
             }
         });
         settingButtons.finalSoundSlider.addListener(new ChangeListener() {
@@ -68,7 +68,7 @@ public class SettingsScreen implements Screen {
                 soundSliderValue = settingButtons.finalSoundSlider.getValue();
                 ConfigurationFields.soundClick.setVolume(id, soundSliderValue);
                 ConfigurationFields.soundClick.play(soundSliderValue);
-                ConfigurationFields.counterSound++;
+                //ConfigurationFields.counterSound++;
             }
         });
     }
